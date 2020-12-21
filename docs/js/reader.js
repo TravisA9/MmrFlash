@@ -1,6 +1,9 @@
-selectedText = ''
+var selectedText = ''
 function showReading(text){
+	parseOutline(text)
 	selectedText = text
+
+	// selectedText = text
 	$('message').innerHTML = ''
 	playlist = {} // Clean out!
     addAudio("tic", "ogg");
@@ -49,157 +52,115 @@ function makeWord(words){           var str = ''
 // A SENTENCE:      {sound:"", line:[ WORD... ]}
 // A WORD:          {sound:"", wd:['ပြ','ဿ','နာ','တွေ']} // Later this may be changed to just references
 //////////////////////////////////////////////////////////////////////////////////////////
+
+
+// sent = 'အဲဒီလိုဖြစ်ရင်တောင် အခြေအနေကို တိုးတက်အောင် လုပ်နိုင်ပါတယ်။'
+// 	res = sent.replace(/([-။—])/g, " $1 "); // Seperate punctuation
+// 	res = res.replace(/\s+/g, " "); // collapse whitespace
+// 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
+// 	words = res.split(' ')
+//////////////////////////////////////////////////////////////////////////////////////////
+function parseOutline(outline){
+
+	for (var h = 0; h < outline.length; h++){
+		var node = outline[h]
+		if('title' in node){
+			node.title = parseSentence(node.title[0])
+			console.log(JSON.stringify(node))
+		} 
+		else if('par' in node){ var lines = node.par
+			for (var j = 0; j < lines.length; j++){	
+				lines[j].line  = parseSentence(lines[j].line[0] )
+			}
+			console.log(JSON.stringify(node))
+		}
+	}
+
+}
+// sent ='လက်တွေ့​သ​မား​ကတော့ ကိစ္စရပ်​တွေကို အရှိအတိုင်း မြင်​စေတယ်။”—အန်​နာ။'
+//////////////////////////////////////////////////////////////////////////////////////////
+function parseSentence(sent){
+	
+	var res = sent.replace(/([():;,\-–—။“”])/g, " $1 "); // Seperate punctuation
+	res = res.replace(/\s+/g, " "); // collapse whitespace
+	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
+	if(res[0] === ' '){ res = res.substring(1, res.length);}
+	var words = res.split(' ')
+	var array = []
+	for (var i = 0; i < words.length; i++) {
+		let word = words[i]
+		array.push( dict.find(x => x.wd === word) )
+	}
+	return array;
+}
+//////////////////////////////////////////////////////////////////////////////////////////
 var reading = [
-	{
-	 title:[ 
-		{sound:"problems", wd:'ပြဿနာတွေ', group:"", note:"Problems"},
-		{sound:"howtodiscuss", wd:'ဆွေးနွေးနိုင်ပုံ', group:"", note:"How to discuss"}
-	 ], sound:"", 
-	 note:"Problems can be discussed" 
-	},
+	{ title:[ 'ပြဿနာတွေ ဆွေးနွေးနိုင်ပုံ' ], 
+	 sound:"", note:"Problems can be discussed" },
 
 	{
 	 par:[
-		{
-		line:[
-			{sound:"WithYou", wd:'သင်နဲ့', group:"", note:"With you (written form)<br> မင်းနဲ့အတူ (Google)" },
-			{sound:"Yourspouse", wd:'သင့်အိမ်ထောင်ဖက်ဟာ', group:"", note:"Your spouse<br>သင့်အိ = your<br>မ်ထောင်ဖက်ဟာ = spouse" },
-			{sound:"Aproblem", wd:'ပြဿနာတစ်ခုကို', group:"", note:"A problem<br>ပြဿနာ = the problem<br>တစ်ခုကို = one" },
-			{sound:"Duringthediscussion", wd:'ဆွေးနွေးတဲ့အခါ', group:"", note:"During the discussion" },
-			{sound:"morethanwhenIstartedtalking", wd:'စပြောချိန်မှာထက်', group:"", note:"More than when I started talking" }, 
-			{sound:"Whenfinished", wd:'ပြီးသွားချိန်မှာ', group:"", note:"When finished" }, 
-			{sound:"Itgotworse", wd:'ပိုဆိုးသွားတယ်လို့', group:"", note:"It got worse" }, 
-			{sound:"Doyoufeel", wd:'ခံစားရသလား', group:"", note:"Do you feel?" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+		{ line:[ 'သင်နဲ့ သင့်အိမ်ထောင်ဖက်ဟာ ပြဿနာတစ်ခုကို ဆွေးနွေးတဲ့အခါ စပြောချိန်မှာထက် ပြီးသွားချိန်မှာ ပိုဆိုးသွားတယ်လို့ ခံစားရသလား။'], 
+		sound:"", note:"Do you and your mate feel that things are getting worse when you start talking about a problem?"}, // , '။' 
 
-		], sound:"", note:"Do you and your mate feel that things are getting worse when you start talking about a problem?"}, // , '။' 
+		{ line:[ 'အဲဒီလိုဖြစ်ရင်တောင် အခြေအနေကို တိုးတက်အောင် လုပ်နိုင်ပါတယ်။'], 
+		sound:"", note:"Even so, these conditions can improve."}, 
 
-		{ 
-		line:[
-			{sound:"Evenso", wd:'အဲဒီလိုဖြစ်ရင်တောင်', group:"", note:"Even so" }, 
-			{sound:"Situation", wd:'အခြေအနေကို', group:"", note:"Situation" }, 
-			{sound:"Improve", wd:'တိုးတက်အောင်', group:"", note:"Improve" }, 
-			{sound:"Youcandoit", wd:'လုပ်နိုင်ပါတယ်', group:"", note:"You can do it" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Even so, these conditions can improve."}, 
+		{ line:['အရင်ဆုံး အမျိုးသားတွေနဲ့ အမျိုးသမီးတွေရဲ့ မတူညီမှုလေးတွေကို သိထားသင့်တယ်။' ], 
+		sound:"", note:"First of all, you should know the differences between men and women."}
+	], 
 
-		{
-		line:[
-			{sound:"Firstofall", wd:'အရင်ဆုံး', group:"", note:"First of all" }, 
-			{sound:"Withmen", wd:'အမျိုးသားတွေနဲ့', group:"", note:"With men" }, 
-			{sound:"Ofwomen", wd:'အမျိုးသမီးတွေရဲ့', group:"", note:"Of women" }, 
-			{sound:"Thedefferences", wd:'မတူညီမှုလေးတွေကို', group:"", note:"The differences" }, 
-			{sound:"Youshouldknow", wd:'သိထားသင့်တယ်', group:"", note:"You should know" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"First of all, you should know the differences between men and women."}
-
-	], sound:"", 
-	note:"Do you and your mate feel that things are getting worse when you start talking about a problem? Even so, the situation can improve. First of all, you should know the differences between men and women."}
+	sound:"", 
+	note:"Do you and your mate feel that things are getting worse when you start talking about a problem? Even so, the situation can improve. First of all, you should know the differences between men and women."
+	}
 ]
+//////////////////////////////////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////////////
 // https://www.jw.org/en/bible-teachings/teenagers/ask/negative-thinking/
 //////////////////////////////////////////////////////////////////////////
 var view_yourself_1 = [
-	{ title:[ 
-		{sound:"", wd:'ကိုယ့်ကိုယ်ကိုယ်', group:"", note:"Myself"},
-		{sound:"", wd:'ဘယ်လို', group:"", note:"How____?"},
-		{sound:"", wd:'ရှုမြင်​သလဲ', group:"", note:"Do you see?"}
-	 ], sound:"", note:"How do you view yourself?" },
+	{ title:[ 'ကိုယ့်ကိုယ်ကိုယ် ဘယ်လို ရှုမြင်​သလဲ' ], 
+	 sound:"", note:"How do you view yourself?" },
 
-
-
-
-	{ title:[ 
-		{sound:"", wd:'အကောင်းမြင်​သ​မား', group:"", note:"Optimist"}
-	 ], sound:"", note:"Optimist" },	
+	{ title:[ 'အကောင်းမြင်​သ​မား' ], sound:"", note:"Optimist" },	
 
 { par:[
 
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'ခပ်ပျော်ပျော်​ပဲ', group:"", note:"It's fun" }, 
-			{sound:"", wd:'နေတယ်', group:"", note:"I live" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"I'm just having fun" }, 
+	{ line:[ '“ခပ်ပျော်ပျော်​ပဲ နေတယ်။' ], 
+		sound:"", note:"I'm just having fun" }, 
 
-	{ line:[ 
-			{sound:"", wd:'အပူအပင်', group:"", note:"Tropical plants <--I suspect this is a translation error!" }, 
-			{sound:"", wd:'သိပ်​မထားဘူး', group:"", note:"Not much" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Not too hot --obviously not well translated--" }, 
+	{ line:[ 'အပူအပင် သိပ်​မထားဘူး။' ], 
+		sound:"", note:"Not too hot --obviously not well translated--" }, 
 
-	{ line:[
-			{sound:"", wd:'နေ့တိုင်း', group:"", note:"every day" }, 
-			{sound:"", wd:'အပြုံး​မျက်နှာ​နဲ့', group:"", note:"With a smile on his face" }, 
-			{sound:"", wd:'နေနိုင်အောင်', group:"", note:"To be able to live" },
-			{sound:"", wd:'ကြိုးစားတယ်', group:"", note:"I try" }, 
-			{sound:"", wd:'။”—', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'ဗယ်​လ​ရီ', group:"", note:"Valerie" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"I try to live with a smile on my face every day —Valerie." } 
+	{ line:[ 'နေ့တိုင်း အပြုံး​မျက်နှာ​နဲ့ နေနိုင်အောင် ကြိုးစားတယ်။”—ဗယ်​လ​ရီ။' ], 
+		sound:"", note:"I try to live with a smile on my face every day —Valerie." } 
 
 	], sound:"", note:"“I try to be as happy and easygoing as possible. Why shouldn’t I live each day with a smile on my face?”—Valerie."
 },
  		
-
-
-	{ title:[ 
-		{sound:"", wd:'အဆိုးမြင်​သ​မား', group:"", note:"Pessimist"}
-	 ],  sound:"", note:"Pessimist" 
-	},
+	{ title:[ 'အဆိုးမြင်​သ​မား' ],  sound:"", note:"Pessimist" },
 
 { par:[	
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'ကောင်းတာတွေ', group:"", note:"Good things" }, 
-			{sound:"", wd:'ဖြစ်လာတဲ့​အခါတိုင်း', group:"", note:"Whenever it happens" }, 
-			{sound:"", wd:'မဖြစ်နိုင်ဘူး၊', group:"", note:"It is not possible." }, 
-			{sound:"", wd:'လွဲ​နေတာ​များလား​လို့', group:"", note:"Is it often wrong?" }, 
-			{sound:"", wd:'ချက်ချင်း', group:"", note:"Immediately" }, 
-			{sound:"", wd:'အတွေး​ဝင်တယ်', group:"", note:"I think" }, 
-			{sound:"", wd:'။”—', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'ရေဗက္ကာ', group:"", note:"Rebecca" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Every time something good happens, I immediately think, 'Is it impossible or is it wrong?' - Rebekah"
-	} ], sound:"", note:"“My first reaction to anything positive is to think something is amiss—too good to be true or a mistake.”—Rebecca."
+	{ line:[ `“ကောင်းတာတွေ ဖြစ်လာတဲ့​အခါတိုင်း မဖြစ်နိုင်ဘူး၊ လွဲ​နေတာ​များလား​လို့ ချက်ချင်း အတွေး​ဝင်တယ်။”—ရေဗက္ကာ။` ], 
+		sound:"", note:"Every time something good happens, I immediately think, 'Is it impossible or is it wrong?' - Rebekah" } 
+	], sound:"", note:"“My first reaction to anything positive is to think something is amiss—too good to be true or a mistake.”—Rebecca."
 },
 
 
-
-
-	{ title:[ 
-		{sound:"", wd:'လက်တွေ့​သ​မား', group:"", note:"Realist"}
-	 ], sound:"", note:"Realist" 
-	},
+	{ title:[ 'လက်တွေ့​သ​မား' ], sound:"", note:"Realist" },
 
 { par:[	
 
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'အကောင်းမြင်​သ​မား​က', group:"", note:"The optimist" }, 
-			{sound:"", wd:'စိတ်ပျက်​ရ​တတ်တယ်', group:"", note:"I get frustrated" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"An optimist is often disappointed"
+	{ line:[ '“အကောင်းမြင်​သ​မား​က စိတ်ပျက်​ရ​တတ်တယ်။' ], 
+		sound:"", note:"An optimist is often disappointed"
 	},
 
-	{ line:[
-			{sound:"", wd:'အဆိုးမြင်​သ​မား​ရဲ့', group:"", note:"Of the pessimist" }, 
-			{sound:"", wd:'ဘဝက​တော့', group:"", note:"Life is" }, 
-			{sound:"", wd:'စိတ်​ချမ်းမြေ့​စ​ရာ', group:"", note:"What a joy!" }, 
-			{sound:"", wd:'ကောင်းမှာ', group:"", note:"Good" }, 
-			{sound:"", wd:'မဟုတ်ဘူး', group:"", note:"No." },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The life of a pessimist is not a happy one"
+	{ line:[ 'အဆိုးမြင်​သ​မား​ရဲ့ ဘဝက​တော့ စိတ်​ချမ်းမြေ့​စ​ရာ ကောင်းမှာ မဟုတ်ဘူး။' ], 
+		sound:"", note:"The life of a pessimist is not a happy one"
 	},
-	{ line:[
-			{sound:"", wd:'လက်တွေ့​သ​မား​ကတော့', group:"", note:"The practitioner is" }, 
-			{sound:"", wd:'ကိစ္စရပ်​တွေကို', group:"", note:"Issues" },
-			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"As it is" },
-			{sound:"", wd:'မြင်​စေတယ်', group:"", note:"Makes it visible" },
-			{sound:"", wd:'။”—', group:"", note:"Punctuation" },
-			{sound:"", wd:'အန်​နာ', group:"", note:"Anna" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The pragmatist makes things look real"
+	{ line:[ 'လက်တွေ့​သ​မား​ကတော့ ကိစ္စရပ်​တွေကို အရှိအတိုင်း မြင်​စေတယ်။”—အန်​နာ။' ], 
+		sound:"", note:"The pragmatist makes things look real"
 	} ], sound:"", note:"“Being optimistic is a setup for disappointment, and being pessimistic is a miserable way to live. Being realistic helps me to see things as they really are.”—Anna."
 }
 
@@ -210,120 +171,49 @@ var view_yourself_1 = [
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////////////
 var view_yourself_2 = [
-	{sound:"",
-	 title:[ 
-		{sound:"", wd:'', group:"ဘာကြောင့်", note:""},
-		{sound:"", wd:'', group:"အရေးကြီး​သလဲ", note:""}
-	 ], sound:"", note:"Why does it matter?" 
-	},
+	{ title:[ 'ဘာကြောင့် အရေးကြီး​သလဲ' ], sound:"", note:"Why does it matter?" },
 
 { par:[	
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"" }, 
-			{sound:"", wd:'စိတ်ရွှင်လန်း​သူတွေ​အတွက်တော့', group:"", note:"" }, 
-			{sound:"", wd:'အချိန်တိုင်း​ဟာ', group:"", note:"" }, 
-			{sound:"", wd:'စားသောက်ပွဲ', group:"", note:"" },
-			{sound:"", wd:'ဖြစ်နေတယ်', group:"", note:"" },
-			{sound:"", wd:'”', group:"", note:"" },
-			{sound:"", wd:'လို့', group:"", note:"" },
-			{sound:"", wd:'ကျမ်းစာ', group:"", note:"" },
-			{sound:"", wd:'ဆိုတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" },
-			{sound:"", wd:"(ပညာအလိမ္မာ ၁၅:၁၅)", group:"", note:"(Proverbs 15:15)" }
-		], sound:"", note:"The Bible says that “the one with a cheerful heart has a continual feast.”"
+	{ line:[ '“စိတ်ရွှင်လန်း​သူတွေ​အတွက်တော့ အချိန်တိုင်း​ဟာ စားသောက်ပွဲ ဖြစ်နေတယ်” လို့ ကျမ်းစာ ဆိုတယ်။ (ပညာအလိမ္မာ ၁၅:၁၅)' ], 
+		sound:"", note:"The Bible says that “the one with a cheerful heart has a continual feast.”"
 	}, 
-	{ line:[
-			{sound:"", wd:'မလိုလား​အပ်​တဲ့', group:"", note:"" }, 
-			{sound:"", wd:'အပျက်သဘော', group:"", note:"" }, 
-			{sound:"", wd:'အတွေး​တွေကို', group:"", note:"" }, 
-			{sound:"", wd:'ဖျောက်​ပြီး', group:"", note:"" }, 
-			{sound:"", wd:'အပြုသဘော', group:"", note:"" }, 
-			{sound:"", wd:'ရှိအောင်', group:"", note:"" }, 
-			{sound:"", wd:'ကြိုးစား​သူတွေဟာ', group:"", note:"" }, 
-			{sound:"", wd:'ပို​ပျော်ရွှင်​ကြပါတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Clearly, people who avoid unnecessary negative thoughts and approach life with a positive outlook tend to be happier."
+	{ line:[ 'မလိုလား​အပ်​တဲ့ အပျက်သဘော အတွေး​တွေကို ဖျောက်​ပြီး အပြုသဘော ရှိအောင် ကြိုးစား​သူတွေဟာ ပို​ပျော်ရွှင်​ကြပါတယ်။' ], 
+		sound:"", note:"Clearly, people who avoid unnecessary negative thoughts and approach life with a positive outlook tend to be happier."
 	},
-	{ line:[
-			{sound:"", wd:'သူတို့မှာ', group:"", note:"" }, 
-			{sound:"", wd:'မိတ်ဆွေ​သူငယ်ချင်း', group:"", note:"" }, 
-			{sound:"", wd:'ပို​များ​တတ်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"They are also likely to make more friends."
+	{ line:[ 'သူတို့မှာ မိတ်ဆွေ​သူငယ်ချင်း ပို​များ​တတ်တယ်။' ], 
+		sound:"", note:"They are also likely to make more friends."
 	},
-	{ line:[
-			{sound:"", wd:'တစ်ချိန်လုံး', group:"", note:"" }, 
-			{sound:"", wd:'အပျက်သဘော', group:"", note:"" }, 
-			{sound:"", wd:'တင်ပြ​နေတဲ့​သူ', group:"", note:"" }, 
-			{sound:"", wd:'အနားမှာ', group:"", note:"" }, 
-			{sound:"", wd:'ဘယ်သူ', group:"", note:"" }, 
-			{sound:"", wd:'နေချင်​မလဲ', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"After all, who wants to spend time with people who are always gloomy?"
+	{ line:[ 'တစ်ချိန်လုံး အပျက်သဘော တင်ပြ​နေတဲ့​သူ အနားမှာ ဘယ်သူ နေချင်​မလဲ။' ], 
+		sound:"", note:"After all, who wants to spend time with people who are always gloomy?"
 	}], sound:"", note:"The Bible says that “the one with a cheerful heart has a continual feast.” (Proverbs 15:15) Clearly, people who avoid unnecessary negative thoughts and approach life with a positive outlook tend to be happier. They are also likely to make more friends. After all, who wants to spend time with people who are always gloomy?"
 },
 
-
-
 { par:[	
-	{ line:[
-			{sound:"", wd:'အပြုသဘောထား​ရှိ​သူတွေတောင်', group:"", note:"" }, 
-			{sound:"", wd:'ဘဝမှာ', group:"", note:"" }, 
-			{sound:"", wd:'အခက်အခဲ​တွေ', group:"", note:"" }, 
-			{sound:"", wd:'ကြုံရ​တတ်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Still, there are realities of life that even the brightest optimist must face."
+	{ line:[ 'အပြုသဘောထား​ရှိ​သူတွေတောင် ဘဝမှာ အခက်အခဲ​တွေ ကြုံရ​တတ်တယ်။' ], 
+		sound:"", note:"Still, there are realities of life that even the brightest optimist must face."
 	}, 
-	{ line:[
-			{sound:"", wd:'ဥပမာ', group:"", note:"For example" }, 
-			{sound:"", wd:'–', group:"", note:"Punctuation" }
-		], sound:"", note:""
+	{ line:[ 'ဥပမာ–' ], 
+		sound:"", note:""
 	}], 
 sound:"", note:""
 },
 
 { par:[	
-	{ line:[
-			{sound:"", wd:'•    ', group:"", note:"Bullet" },
-			{sound:"", wd:'စစ်၊', group:"", note:"" }, 
-			{sound:"", wd:'အကြမ်းဖက်မှု၊', group:"", note:"" }, 
-			{sound:"", wd:'ရာဇဝတ်မှု', group:"", note:"" }, 
-			{sound:"", wd:'သတင်းတွေကို', group:"", note:"" }, 
-			{sound:"", wd:'အမြဲ', group:"", note:"" }, 
-			{sound:"", wd:'ကြားနေ​ရနိုင်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The news may bombard you with reports of war, terrorism, or crime."
+	{ line:[ '• စစ်၊ အကြမ်းဖက်မှု၊ ရာဇဝတ်မှု သတင်းတွေကို အမြဲ ကြားနေ​ရနိုင်တယ်။' ], 
+		sound:"", note:"The news may bombard you with reports of war, terrorism, or crime."
 	},    
-	{ line:[
-			{sound:"", wd:'•    ', group:"", note:"Bullet" },
-			{sound:"", wd:'မိသားစု​အတွင်းမှာ', group:"", note:"" }, 
-			{sound:"", wd:'ပြဿနာ​တွေ', group:"", note:"" }, 
-			{sound:"", wd:'ရှိ​နိုင်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"You might have to deal with problems in your family."
+	{ line:[ '• မိသားစု​အတွင်းမှာ ပြဿနာ​တွေ ရှိ​နိုင်တယ်။' ], 
+		sound:"", note:"You might have to deal with problems in your family."
 	}, 
 
-	{ line:[
-			{sound:"", wd:'•    ', group:"", note:"Bullet" },
-			{sound:"", wd:'ကိုယ်တိုင်ရဲ့', group:"", note:"" }, 
-			{sound:"", wd:'ချွတ်ယွင်းချက်၊', group:"", note:"" }, 
-			{sound:"", wd:'အားနည်းချက်တွေကို', group:"", note:"" }, 
-			{sound:"", wd:'တစ်ချိန်လုံး', group:"", note:"" },
-			{sound:"", wd:'တိုက်လှန်​နေရ​နိုင်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"You no doubt have your own failings and weaknesses to contend with."
+	{ line:[ '• ကိုယ်တိုင်ရဲ့ ချွတ်ယွင်းချက်၊ အားနည်းချက်တွေကို တစ်ချိန်လုံး တိုက်လှန်​နေရ​နိုင်တယ်။' ], 
+		sound:"", note:"You no doubt have your own failings and weaknesses to contend with."
 	},    
-	{ line:[
-			{sound:"", wd:'•    ', group:"", note:"Bullet" }, 
-			{sound:"", wd:'သူငယ်ချင်း​ရဲ့', group:"", note:"" }, 
-			{sound:"", wd:'အပြောအဆို၊', group:"", note:"" }, 
-			{sound:"", wd:'အပြုအမူကြောင့်', group:"", note:"" }, 
-			{sound:"", wd:'စိတ်မကောင်း', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်နိုင်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"A friend may have hurt your feelings."
+	{ line:[ '• သူငယ်ချင်း​ရဲ့ အပြောအဆို၊ အပြုအမူကြောင့် စိတ်မကောင်း ဖြစ်နိုင်တယ်။' ], 
+		sound:"", note:"A friend may have hurt your feelings."
 	}], 	
 sound:"", note:""
 },
@@ -331,43 +221,17 @@ sound:"", note:""
 
 
 { par:[	
-	{ line:[
-			{sound:"", wd:'ဒီ​အဖြစ်မှန်​တွေကို', group:"", note:"" }, 
-			{sound:"", wd:'မမြင်​အောင်', group:"", note:"" }, 
-			{sound:"", wd:'မျက်စိ​စုံ​မှိတ်​ထားလို့', group:"", note:"" }, 
-			{sound:"", wd:'မရနိုင်​သလို', group:"", note:"" }, 
-			{sound:"", wd:'အဲဒီ​အကြောင်းကိုပဲ', group:"", note:"" }, 
-			{sound:"", wd:'တနုံ့နုံ့တွေး​နေလို့လည်း', group:"", note:"" }, 
-			{sound:"", wd:'မဖြစ်​ဘူး', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Rather than close your eyes to those realities—or fixate on them so that you feel miserable."
+	{ line:[ 'ဒီ​အဖြစ်မှန်​တွေကို မမြင်​အောင် မျက်စိ​စုံ​မှိတ်​ထားလို့ မရနိုင်​သလို အဲဒီ​အကြောင်းကိုပဲ တနုံ့နုံ့တွေး​နေလို့လည်း မဖြစ်​ဘူး။' ], 
+		sound:"", note:"Rather than close your eyes to those realities—or fixate on them so that you feel miserable."
 	}, 
-	{ line:[
-			{sound:"", wd:'မျှမျှတတ', group:"", note:"" }, 
-			{sound:"", wd:'ရှုမြင်ဖို့', group:"", note:"" }, 
-			{sound:"", wd:'ကြိုးစားပါ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Try to be ballanced."
+	{ line:[ 'မျှမျှတတ ရှုမြင်ဖို့ ကြိုးစားပါ။' ], 
+		sound:"", note:"Try to be ballanced."
 	},   
-	{ line:[
-			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"" }, 
-			{sound:"", wd:'ရှုမြင်​တာ​က', group:"", note:"" }, 
-			{sound:"", wd:'အလွန်အမင်း', group:"", note:"" }, 
-			{sound:"", wd:'အပျက်သဘောထား', group:"", note:"" }, 
-			{sound:"", wd:'မဝင်​စေ​သလို', group:"", note:"" }, 
-			{sound:"", wd:'အလွန်အမင်း', group:"", note:"" }, 
-			{sound:"", wd:'စိတ်ဓာတ်ကျ​ခြင်း', group:"", note:"" }, 
-			{sound:"", wd:'မရှိဘဲ', group:"", note:"" }, 
-			{sound:"", wd:'ဘဝ​အခြေအနေကို', group:"", note:"" }, 
-			{sound:"", wd:'လက်ခံ​နိုင်​ပါလိမ့်မယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"A realistic approach will help you to avoid undue negative thoughts and accept life’s realities without being crushed by them."
+	{ line:[ 'အရှိအတိုင်း ရှုမြင်​တာ​က အလွန်အမင်း အပျက်သဘောထား မဝင်​စေ​သလို အလွန်အမင်း စိတ်ဓာတ်ကျ​ခြင်း မရှိဘဲ ဘဝ​အခြေအနေကို လက်ခံ​နိုင်​ပါလိမ့်မယ်။' ], 
+		sound:"", note:"A realistic approach will help you to avoid undue negative thoughts and accept life’s realities without being crushed by them."
 	}], 	
 sound:"", note:""
 },
-
-         
- 
 
 ]  //END
 //////////////////////////////////////////////////////////////////////////

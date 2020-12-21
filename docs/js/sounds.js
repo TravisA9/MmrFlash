@@ -1,3 +1,17 @@
+// https://www.asiapearltravels.com/language/lesson33.php
+// ျ | ya1 pin1 | ယပင့် which is "j" shaped and appended at the lower right side of the character,
+
+// ြ | ya1 yit | ရရစ် which looks like a 3/4 of the rectangle with open end at the right side that surrounds the character,
+
+// ွ | wa1 hsweare3 | ဝဆွဲ which has "o" or triangle shape depending on the font type that goes below the character, and
+
+// ှ | ha1 hto3 | ဟထိုး which looks like a mirror image of "L" facing to the left
+// side that goes under the character. When used in combination with wa1
+// hsweare3, it will only appear as a small dash or a tiny back slash to the left
+// of wa1 hsweare3 like this: ဝွှ
+
+
+
 
 vowels = [
 // ာ ( 4140 )
@@ -29,6 +43,7 @@ vowels = [
 // ွ ( 4157 )
 	{txt:"ွ", note:" - sound" },
 
+// ှ | ha1 hto3 | ဟထိုး which looks like a mirror image of "L" facing to the left side that goes under the character. When used in combination with wa1 hsweare3, it will only appear as a small dash or a tiny back slash to the left of wa1 hsweare3 like this: ဝွှ
 
 // က ( 4096 ) ka
 // ခ ( 4097 ) kha
