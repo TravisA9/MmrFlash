@@ -1,0 +1,90 @@
+ <!DOCTYPE html>
+<html>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>Mmr Flash</title>
+<link rel="stylesheet" type="text/css" href="mmr.css">
+
+<body>
+
+
+</head>
+<body>
+<div style="position:fixed; top:0px; width:100%;">
+<ul>
+    <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn"><strike>Explore</strike></a>
+    <div class="dropdown-content">
+      <a href="javascript:UC();">Sounds</a>
+      <a href="javascript:UC();">Words</a>
+      <a href="javascript:UC();">Sentences</a>
+    </div>
+  </li>
+
+    <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn"><strike>Guess</strike></a>
+    <div class="dropdown-content">
+      <a href="javascript:UC();">Sounds</a>
+      <a href="javascript:UC();">Words</a>
+      <a href="javascript:UC();">Sentences</a>
+    </div>
+  </li>
+
+
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Reading</a>
+    <div class="dropdown-content">
+      <a href="javascript:showReading(reading);">Resolving problems: family</a>
+      <div style="background:lightblue; padding:8px;">How Can I Avoid Negative Thinking?</div>
+      <a href="javascript:showReading(view_yourself_1);">How do you view yourself?</a>
+      <a href="javascript:showReading(view_yourself_2);">Why does it matter?</a>
+      <a href="javascript:showReading(view_yourself_3);">Keep faults in perspective</a>
+      <a href="javascript:showReading(view_yourself_4);">Avoid comparisons</a>
+      <a href="javascript:showReading(view_yourself_5);">Be peacemaker in your family</a>
+      <a href="javascript:showReading(view_yourself_6);">Cultivate gratitude</a>
+      <a href="javascript:showReading(view_yourself_7);">Examine your friendships</a>
+    </div>
+  </li>
+
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn"><strike>Builder</strike></a>
+    <div class="dropdown-content">
+      <a href="javascript:showBuilder();">Build Sentence</a>
+    </div>
+  </li>
+</ul>
+</div>
+<!-- ////////////////////////////////////////////////////////////////////////////////// -->
+<div id='wrap' class="mmr" style="align-content:center;">
+  <div id='message' style="font size:22px;"></div>
+	<div id='text' class="mmr" style="width:60%; display:inline-block;" onclick="select(event)"></div>
+  <div id='info' class="mmr" style="vertical-align:top; position:fixed; top:50px; display:inline-block; width:25%"></div>
+</div>
+<!-- ////////////////////////////////////////////////////////////////////////////////// -->
+	
+<!-- <div class="header" id="myHeader"></div> -->
+	
+</body>
+
+
+<script type="text/javascript">
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////UTILITY//////////////////////////////////////////
+$ = (sel) => document.getElementById(sel);
+chooseOne = (a) => a[ Math.floor(Math.random()*a.length) ]
+/////////////////////////////////////////UTILITY//////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+window.onload = function() {
+
+};
+//////////////////////////////////////////////////////////////////////////////////////////
+</script>
+<script src="mmr.js" type="text/javascript"></script>
+<script src="audio.js" type="text/javascript"></script>
+<script src="sounds.js" type="text/javascript"></script>
+<!-- <script src="words.js" type="text/javascript"></script>
+<script src="guess.js" type="text/javascript"></script> -->
+<script src="builder.js" type="text/javascript"></script>
+<script src="reader.js" type="text/javascript"></script>
+</html>
+
