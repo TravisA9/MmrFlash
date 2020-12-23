@@ -1,17 +1,15 @@
 var selectedText = ''
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
 function showReading(text){
 	parseOutline(text)
-	selectedText = text
 
-	// selectedText = text
 	$('message').innerHTML = ''
 	playlist = {} // Clean out!
     addAudio("tic", "ogg");
     addAudio("bloop", "ogg");
-
 	$('text').innerHTML = '';
-	for (var i = 0; i < text.length; i++) {
-		let node = text[i];
+	for (var i = 0; i < selectedText.length; i++) {
+		let node = selectedText[i];
 		if('title' in node){
 			addAudio(node.sound, "mp3");
 			$('text').innerHTML += `<div class="title" id="${i}">${makeWord(node['title'])}</div>`
@@ -32,15 +30,23 @@ function makeSentence(sentences){        var str = ''
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
 function makeWord(words){           var str = ''
 
-	for (var j = 0; j < words.length; j++){		
+	for (var j = 0; j < words.length; j++){	
+
 		addAudio(words[j].sound, "mp3");
-		var word = segment(words[j].wd)
-		var wd = ''
-		for (var i = 0; i < word.length; i++){
-			wd += `<span class="lt" id="${i}">${word[i]}</span>`;
-		}
-		str += `<span class="wd" id="${j}">${wd}</span>`;
-	}
+
+		if(words[j].group === "Num"){
+			str += `<span class="Num" id="${j}">${words[j].wd}</span>`;
+		} else if(words[j].group === "punct"){
+			str += `<span class="punct" id="${j}">${words[j].wd}</span>`;
+		} else {
+			var wd = '', word = segment(words[j].wd)
+			for (var i = 0; i < word.length; i++){			
+				wd += `<span class="lt" id="${i}">${word[i]}</span>`;
+			}
+			str += `<span class="wd" id="${j}">${wd}</span>`;
+		} 
+
+	} 
 	return str
 }
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -52,44 +58,82 @@ function makeWord(words){           var str = ''
 // A SENTENCE:      {sound:"", line:[ WORD... ]}
 // A WORD:          {sound:"", wd:['ပြ','ဿ','နာ','တွေ']} // Later this may be changed to just references
 //////////////////////////////////////////////////////////////////////////////////////////
-
-
-// sent = 'အဲဒီလိုဖြစ်ရင်တောင် အခြေအနေကို တိုးတက်အောင် လုပ်နိုင်ပါတယ်။'
-// 	res = sent.replace(/([-။—])/g, " $1 "); // Seperate punctuation
-// 	res = res.replace(/\s+/g, " "); // collapse whitespace
-// 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
-// 	words = res.split(' ')
-//////////////////////////////////////////////////////////////////////////////////////////
 function parseOutline(outline){
-
+	selectedText = JSON.parse(JSON.stringify(outline)); //	text
 	for (var h = 0; h < outline.length; h++){
-		var node = outline[h]
+		var node = selectedText[h]
 		if('title' in node){
 			node.title = parseSentence(node.title[0])
-			console.log(JSON.stringify(node))
+			// console.log(JSON.stringify(node))
 		} 
 		else if('par' in node){ var lines = node.par
 			for (var j = 0; j < lines.length; j++){	
 				lines[j].line  = parseSentence(lines[j].line[0] )
 			}
-			console.log(JSON.stringify(node))
+			// console.log(JSON.stringify(node))
 		}
 	}
-
 }
-// sent ='လက်တွေ့​သ​မား​ကတော့ ကိစ္စရပ်​တွေကို အရှိအတိုင်း မြင်​စေတယ်။”—အန်​နာ။'
+//////////////////////////////////////////////////////////////////////////////////////////
+// Compress(view_yourself_3)
+//////////////////////////////////////////////////////////////////////////////////////////
+function Compress(obj){
+
+	function words(arr){ var first = arr[0]
+		for (var i = 1; i < arr.length; i++) {
+			first.wd += ' ' + arr[i].wd
+		}
+		return [ first.wd ]
+	}
+
+	for (var h = 0; h < obj.length; h++){
+		var node = obj[h]
+
+
+
+		if('title' in node){
+			var array = node.title
+			node.title = words(array)
+			//console.log(JSON.stringify(node))
+		} 
+
+
+		else if('par' in node){ var lines = node.par
+			for (var j = 0; j < lines.length; j++){	
+				var line = lines[j].line
+				lines[j].line = words(line)
+				//console.log(JSON.stringify(node))
+			}
+		}
+	}
+			console.log(JSON.stringify(obj))
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+//  sent = 'အဲဒီလိုဖြစ်ရင်တောင် အခြေအနေကို တိုးတက်အောင် လုပ်နိုင်ပါတယ်။'
+// 	res = sent.replace(/([():;,\-–—။“”])/g, " $1 "); // Seperate punctuation
+// 	res = res.replace(/\s+/g, " "); // collapse whitespace
+// 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
+// 	words = res.split(' ')
 //////////////////////////////////////////////////////////////////////////////////////////
 function parseSentence(sent){
-	
-	var res = sent.replace(/([():;,\-–—။“”])/g, " $1 "); // Seperate punctuation
+	//  ၀၁၂၃၄၅၆၇၈၉
+
+	var res = sent.replace(/([():;,\-–—။၊“”၀၁၂၃၄၅၆၇၈၉])/g, " $1 "); // Seperate punctuation
 	res = res.replace(/\s+/g, " "); // collapse whitespace
 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
 	if(res[0] === ' '){ res = res.substring(1, res.length);}
 	var words = res.split(' ')
 	var array = []
-	for (var i = 0; i < words.length; i++) {
+	for (var i = 0; i < words.length; i++){
 		let word = words[i]
-		array.push( dict.find(x => x.wd === word) )
+		var def = dict.find(x => x.wd === word)
+		// Definition not found in Dictionary
+		if(def == undefined){
+			var node = {sound:"", wd:word, group:"", note:""}
+			dict.push(node)
+			def = node
+		}
+		array.push( def )
 	}
 	return array;
 }
@@ -239,231 +283,33 @@ sound:"", note:""
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 view_yourself_3 = [
-	{sound:"",
-	 title:[ 
-		{sound:"", wd:'ကိုယ့်​အမှားတွေကို', group:"", note:""},
-		{sound:"", wd:'အရှိအတိုင်း', group:"", note:""},
-		{sound:"", wd:'လက်ခံပါ', group:"", note:""},
-		{sound:"", wd:'။', group:"", note:"Period/full stop" }
-	 ], sound:"", note:"Keep your faults in perspective." 
-	},
+{"sound":"","title":["ကိုယ့်​အမှားတွေကို အရှိအတိုင်း လက်ခံပါ ။"
+],"note":"Keep your faults in perspective."},
 
-            
-{ par:[	
-	{ line:[
-			{sound:"", wd:'ကျမ်းစာက', group:"", note:"" }, 
-			{sound:"", wd:'ဒီလို​ဆိုတယ်', group:"", note:"" }, 
-			{sound:"", wd:'–', group:"", note:"Punctuation" }, 
-			{sound:"", wd:'“', group:"", note:"" },			
-			{sound:"", wd:'အခါ​ခပ်သိမ်း', group:"", note:"" }, 
-			{sound:"", wd:'ဖြောင့်မှန်ရာကို​သာ', group:"", note:"" }, 
-			{sound:"", wd:'ပြုကျင့်​ကာ', group:"", note:"" }, 
-			{sound:"", wd:'အမှား​ကို', group:"", note:"" },			
-			{sound:"", wd:'လုံးဝ', group:"", note:"" }, 
-			{sound:"", wd:'မပြု​တတ်​သူ​ဟူ၍', group:"", note:"" }, 
-			{sound:"", wd:'ကမ္ဘာမြေကြီး​ပေါ်တွင်', group:"", note:"" }, 
-			{sound:"", wd:'တစ်ဦးတစ်ယောက်မျှ', group:"", note:"" },
-			{sound:"", wd:'မရှိ', group:"", note:"" },
-			{sound:"", wd:'။” (', group:"", note:"" },
-			{sound:"", wd:'ဒေသနာ', group:"", note:"" },
-			{sound:"", wd:'၇:၂၀၊', group:"", note:"" },
-			{sound:"", wd:'ခေတ်သုံး​မြန်မာ', group:"", note:"" },
-			{sound:"", wd:'သမ္မာကျမ်း', group:"", note:"" },
-			{sound:"", wd:')', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The Bible says: “There is no one on earth who does what is right all the time and never makes a mistake.” (Ecclesiastes 7:20, Good News Translation)"
-	},
-	{ line:[
-			{sound:"", wd:'လူသား​တစ်ယောက်', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်လို့', group:"", note:"" }, 
-			{sound:"", wd:'ချွတ်ယွင်းချက်', group:"", note:"" }, 
-			{sound:"", wd:'ရှိတာ၊', group:"", note:"" },
-			{sound:"", wd:'အမှား​လုပ်မိတာ', group:"", note:"" },
-			{sound:"", wd:'ဖြစ်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The fact that you have faults and make mistakes shows that you are human"
-	},
-		{ line:[
-			{sound:"", wd:'သုံး​စား​မရတဲ့​သူ', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်လို့', group:"", note:"" }, 
-			{sound:"", wd:'မဟုတ်ဘူး', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:", not that you are a failure."
-	},
-	], sound:"", note:""
-},
+{"par":[
+	{"line":["ကျမ်းစာက ဒီလို​ဆိုတယ် – “ အခါ​ခပ်သိမ်း ဖြောင့်မှန်ရာကို​သာ ပြုကျင့်​ကာ အမှား​ကို လုံးဝ မပြု​တတ်​သူ​ဟူ၍ ကမ္ဘာမြေကြီး​ပေါ်တွင် တစ်ဦးတစ်ယောက်မျှ မရှိ ။” ( ဒေသနာ ၇:၂၀၊ ခေတ်သုံး​မြန်မာ သမ္မာကျမ်း ) ။"],
+	"sound":"","note":"The Bible says: “There is no one on earth who does what is right all the time and never makes a mistake.” (Ecclesiastes 7:20, Good News Translation)"},
+	{"line":["လူသား​တစ်ယောက် ဖြစ်လို့ ချွတ်ယွင်းချက် ရှိတာ၊ အမှား​လုပ်မိတာ ဖြစ်တယ် ။"],
+	"sound":"","note":"The fact that you have faults and make mistakes shows that you are human"},
+	{"line":["သုံး​စား​မရတဲ့​သူ ဖြစ်လို့ မဟုတ်ဘူး ။"],
+	"sound":"","note":", not that you are a failure."}
+],"sound":"","note":""},
 
-  
- 
-  
-{ par:[	
-	{ line:[
-			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"" }, 
-			{sound:"", wd:'ရှုမြင်​နိုင်ပုံ', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"How to be realistic:"
-	},	
-	{ line:[
-			{sound:"", wd:'အမှားတွေ​ကနေ', group:"", note:"" }, 
-			{sound:"", wd:'သင်ယူပါ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Work on your faults,"
-	},	
-	{ line:[
-			{sound:"", wd:'အမှား​ကင်း​သူ', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်​ရမယ်လို့', group:"", note:"" }, 
-			{sound:"", wd:'မမျှော်လင့်ပါနဲ့', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"but don’t expect perfection from yourself."
-	},	
-    
-          
-
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"" },
-			{sound:"", wd:'အမှားတွေကို', group:"", note:"" }, 
-			{sound:"", wd:'တနုံ့နုံ့တွေး​ပြီး', group:"", note:"" }, 
-			{sound:"", wd:'စိတ်ပျက်လက်ပျက်', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်​မနေချင်​ဘူး', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"“I resist the urge to dwell on my faults,” says a young man named Caleb."
-	},	
-	{ line:[
-			{sound:"", wd:'ဒါမျိုး', group:"", note:"" }, 
-			{sound:"", wd:'နောက်ထပ်', group:"", note:"" }, 
-			{sound:"", wd:'မဖြစ်အောင်', group:"", note:"" }, 
-			{sound:"", wd:'အမှားတွေ​ကနေ', group:"", note:"" },
-			{sound:"", wd:'သင်ယူဖို့', group:"", note:"" }, 
-			{sound:"", wd:'ကြိုးစားတယ်', group:"", note:"" }, 
-			{sound:"", wd:'”', group:"", note:"" }, 
-			{sound:"", wd:'လို့', group:"", note:"" },
-			{sound:"", wd:'လူငယ်', group:"", note:"" },
-			{sound:"", wd:'ကာလက်', group:"", note:"" },
-			{sound:"", wd:'ပြောတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"“Instead, I try to learn from them so that I can see ways to improve.”"
-	},
-	],sound:"", note:""
-},
-]  //END
+{"par":[
+	{"line":["အရှိအတိုင်း ရှုမြင်​နိုင်ပုံ ။"],
+	"sound":"","note":"How to be realistic:"},
+	{"line":["အမှားတွေ​ကနေ သင်ယူပါ ။"],
+	"sound":"","note":"Work on your faults,"},
+	{"line":["အမှား​ကင်း​သူ ဖြစ်​ရမယ်လို့ မမျှော်လင့်ပါနဲ့ ။"],
+	"sound":"","note":"but don’t expect perfection from yourself."},
+	{"line":["“ အမှားတွေကို တနုံ့နုံ့တွေး​ပြီး စိတ်ပျက်လက်ပျက် ဖြစ်​မနေချင်​ဘူး ။"],
+	"sound":"","note":"“I resist the urge to dwell on my faults,” says a young man named Caleb."},
+	{"line":["ဒါမျိုး နောက်ထပ် မဖြစ်အောင် အမှားတွေ​ကနေ သင်ယူဖို့ ကြိုးစားတယ် ” လို့ လူငယ် ကာလက် ပြောတယ် ။"],
+	"sound":"","note":"“Instead, I try to learn from them so that I can see ways to improve.”"}
+],"sound":"","note":""}
+]
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-var view_yourself_4 = [
-	{sound:"",
-	 title:[ 
-		{sound:"", wd:'', group:"မနှိုင်းယှဉ်ပါနဲ့", note:"Avoid comparisons."},
-		{sound:"", wd:'။', group:"", note:"Period/full stop" }
-	 ], sound:"", note:"Avoid comparisons." 
-	},
-
-           
- 
- 
-{ par:[	
-	{ line:[
-			{sound:"", wd:'ကျမ်းစာက', group:"", note:""},
-			{sound:"", wd:'ဒီလို​ဆိုတယ်', group:"", note:""},
-			{sound:"", wd:'– “', group:"", note:"" }, 
-			{sound:"", wd:'အတ္တဆန်​တာ၊', group:"", note:"" }, 
-			{sound:"", wd:'အချင်းချင်း', group:"", note:"" }, 
-			{sound:"", wd:'ပြိုင်ဆိုင်​တာ၊', group:"", note:"" },
-			{sound:"", wd:'မနာလို​မ​ရှု​ဆိတ်', group:"", note:"" },
-			{sound:"", wd:'ဖြစ်တာ​တွေကို', group:"", note:"" },
-			{sound:"", wd:'ရှောင်​ကြစို့', group:"", note:"" },
-			{sound:"", wd:'။” (', group:"", note:"" },
-			{sound:"", wd:'ဂလာတိ', group:"", note:"" },
-			{sound:"", wd:'၅:၂၆', group:"", note:"" },
-			{sound:"", wd:' ) ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The Bible says: “Let us not become egotistical, stirring up competition with one another, envying one another.” (Galatians 5:26)"
-	},	
-      
-	{ line:[
-			{sound:"", wd:'လူမှု​မီဒီယာ​မှာ', group:"", note:""},
-			{sound:"", wd:'တင်ထားတဲ့', group:"", note:""},
-			{sound:"", wd:'ဓာတ်ပုံတွေကို', group:"", note:"" }, 
-			{sound:"", wd:'ကြည့်ပြီး', group:"", note:"" }, 
-			{sound:"", wd:'ငါ့ကို​တော့', group:"", note:"" }, 
-			{sound:"", wd:'မဖိတ်​ဘူးဆိုပြီး', group:"", note:"" },
-			{sound:"", wd:'စိတ်​နာကြည်း​ပါသလား', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Looking at social media photos of all those events that you weren’t invited to can make you feel bitter."
-	},	
-     
-	{ line:[
-			{sound:"", wd:'ဒါဆိုရင်', group:"", note:""},
-			{sound:"", wd:'အချစ်ဆုံး', group:"", note:""},
-			{sound:"", wd:'သူငယ်ချင်းတွေ​ကို', group:"", note:"" }, 
-			{sound:"", wd:'အမုန်း​ဆုံး', group:"", note:"" }, 
-			{sound:"", wd:'ရန်သူတွေ​အဖြစ်', group:"", note:"" }, 
-			{sound:"", wd:'မြင်​မိ​သွားနိုင်တယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"It can make your best friends seem like your worst enemies."
-	},
-	], sound:"", note:""
-},
-{ par:[	 
-	{ line:[
-			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"" }, 
-			{sound:"", wd:'ရှုမြင်​နိုင်ပုံ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"How to be realistic:"
-	},	
-	{ line:[
-			{sound:"", wd:'မိတ်ဆုံပွဲ', group:"", note:""},
-			{sound:"", wd:'လုပ်တဲ့​အခါ', group:"", note:""},
-			{sound:"", wd:'ယောက်​တိုင်း​ကို', group:"", note:"" }, 
-			{sound:"", wd:'ဖိတ်နိုင်​မှာ', group:"", note:"" }, 
-			{sound:"", wd:'မဟုတ်ဘူးဆိုတာ', group:"", note:""},
-			{sound:"", wd:'လက်ခံပါ', group:"", note:""},
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Accept the fact that you won’t be invited to every social event."
-	},	
-	{ line:[
-			{sound:"", wd:'လူမှု​မီဒီယာ​မှာ', group:"", note:"" }, 
-			{sound:"", wd:'တင်ထားတဲ့', group:"", note:"" }, 
-			{sound:"", wd:'ပုံ​တွေ​ကနေ', group:"", note:"" }, 
-			{sound:"", wd:'တစ်ခုလုံးကို', group:"", note:"" },
-			{sound:"", wd:'ခြုံငုံ​မသိ​နိုင်ဘူး', group:"", note:""},
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Besides, social media posts don’t tell the whole story."
-	},	
-     
-	{ line:[
-			{sound:"", wd:'“', group:"", note:""},
-			{sound:"", wd:'ဘဝရဲ့', group:"", note:"" }, 
-			{sound:"", wd:'အပျော်ဆုံး​အချိန်', group:"", note:"" }, 
-			{sound:"", wd:'ပုံတွေကို​ပဲ', group:"", note:"" }, 
-			{sound:"", wd:'လူမှု​မီဒီယာ​မှာ', group:"", note:"" },
-			{sound:"", wd:'တင်​တတ်ကြတယ်', group:"", note:""},
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"“Social media is mostly a highlight reel of people’s lives,” says a teenager named Alexis."
-	},	
-        
-
-	{ line:[
-			{sound:"", wd:'နေ့တိုင်း', group:"", note:""},
-			{sound:"", wd:'လုပ်နေကျ', group:"", note:"" }, 
-			{sound:"", wd:'ပျော်စရာ​မကောင်းတာတွေကို​တော့', group:"", note:"" }, 
-			{sound:"", wd:'မတင်​ကြဘူး', group:"", note:"" }, 
-			{sound:"", wd:'”', group:"", note:"" },
-			{sound:"", wd:'လို့', group:"", note:""},
-			{sound:"", wd:'ဆယ်ကျော်သက်', group:"", note:""},
-			{sound:"", wd:'အ​လက်​ဆီ', group:"", note:"" }, 
-			{sound:"", wd:'ပြောတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"“People usually leave out the ordinary parts.”"
-	},
-	], sound:"", note:""
-},
-
-]  //END
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -471,203 +317,135 @@ var view_yourself_4 = [
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-var view_yourself_5 = [
-	{sound:"",
-	 title:[ 
-		{sound:"", wd:'အထူးသဖြင့်', group:"", note:""},
-		{sound:"", wd:'မိသားစုမှာ', group:"", note:""},
-		{sound:"", wd:'သင့်မြတ်​စွာ', group:"", note:""},
-		{sound:"", wd:'နေဖို့', group:"", note:""},
-		{sound:"", wd:'ကြိုးစားပါ', group:"", note:""},
-		{sound:"", wd:'။', group:"", note:"Period/full stop" }
-	 ], sound:"", note:"Be a peacemaker—especially in your family." 
-	},
+var view_yourself_4 = [{"sound":"","title":["မနှိုင်းယှဉ်ပါနဲ့ ။"],"note":"Avoid comparisons."},{"par":[{"line":["ကျမ်းစာက ဒီလို​ဆိုတယ် – “ အတ္တဆန်​တာ၊ အချင်းချင်း ပြိုင်ဆိုင်​တာ၊ မနာလို​မ​ရှု​ဆိတ် ဖြစ်တာ​တွေကို ရှောင်​ကြစို့ ။” ( ဂလာတိ ၅:၂၆  )  ။"],"sound":"","note":"The Bible says: “Let us not become egotistical, stirring up competition with one another, envying one another.” (Galatians 5:26)"},{"line":["လူမှု​မီဒီယာ​မှာ တင်ထားတဲ့ ဓာတ်ပုံတွေကို ကြည့်ပြီး ငါ့ကို​တော့ မဖိတ်​ဘူးဆိုပြီး စိတ်​နာကြည်း​ပါသလား ။"],"sound":"","note":"Looking at social media photos of all those events that you weren’t invited to can make you feel bitter."},{"line":["ဒါဆိုရင် အချစ်ဆုံး သူငယ်ချင်းတွေ​ကို အမုန်း​ဆုံး ရန်သူတွေ​အဖြစ် မြင်​မိ​သွားနိုင်တယ် ။"],"sound":"","note":"It can make your best friends seem like your worst enemies."}],"sound":"","note":""},{"par":[{"line":["အရှိအတိုင်း ရှုမြင်​နိုင်ပုံ ။"],"sound":"","note":"How to be realistic:"},{"line":["မိတ်ဆုံပွဲ လုပ်တဲ့​အခါ ယောက်​တိုင်း​ကို ဖိတ်နိုင်​မှာ မဟုတ်ဘူးဆိုတာ လက်ခံပါ ။"],"sound":"","note":"Accept the fact that you won’t be invited to every social event."},{"line":["လူမှု​မီဒီယာ​မှာ တင်ထားတဲ့ ပုံ​တွေ​ကနေ တစ်ခုလုံးကို ခြုံငုံ​မသိ​နိုင်ဘူး ။"],"sound":"","note":"Besides, social media posts don’t tell the whole story."},{"line":["“ ဘဝရဲ့ အပျော်ဆုံး​အချိန် ပုံတွေကို​ပဲ လူမှု​မီဒီယာ​မှာ တင်​တတ်ကြတယ် ။"],"sound":"","note":"“Social media is mostly a highlight reel of people’s lives,” says a teenager named Alexis."},{"line":["နေ့တိုင်း လုပ်နေကျ ပျော်စရာ​မကောင်းတာတွေကို​တော့ မတင်​ကြဘူး ” လို့ ဆယ်ကျော်သက် အ​လက်​ဆီ ပြောတယ် ။"],"sound":"","note":"“People usually leave out the ordinary parts.”"}],"sound":"","note":""}]
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+var view_yourself_5 = [{"sound":"","title":["အထူးသဖြင့် မိသားစုမှာ သင့်မြတ်​စွာ နေဖို့ ကြိုးစားပါ ။"],"note":"Be a peacemaker—especially in your family."},{"par":[{"line":["ကျမ်းစာက ဒီလို​ဆိုတယ်  – “ ဖြစ်နိုင်မယ်​ဆိုရင် လူအားလုံးနဲ့ သင့်မြတ်​အောင် အတတ်နိုင်ဆုံး ကြိုးစားပါ ။” ( ရောမ ၁၂:၁၈ ) ။"],"sound":"","note":"The Bible says: “If possible, as far as it depends on you, be peaceable.” (Romans 12:18)"},{"line":["တခြား​သူတွေရဲ့ လုပ်ရပ်တွေကို ထိန်းချုပ်​နိုင်မှာ မဟုတ်ပေမဲ့ ကိုယ့်​တုံ့ပြန်ပုံကို​တော့ ထိန်းချုပ်​နိုင်ပါတယ် ။"],"sound":"","note":"You can’t fully control the actions of others, but you can control your reaction."},{"line":["သင့်မြတ်​စွာ နေဖို့ ရွေးချယ်​နိုင်တယ် ။"],"sound":"","note":"You can choose to be peaceable."}],"sound":"","note":""},{"par":[{"line":["အရှိအတိုင်း ရှုမြင်​နိုင်ပုံ ။"],"sound":"","note":"How to be realistic:"},{"line":["မိသားစု၊ မိတ်ဆွေ​တွေ​ကြားမှာ ပြဿနာ ပို​တင်းမာ​သွား​စေမယ့်​အစား သင့်မြတ်​အောင် လုပ်ဆောင်ဖို့ ကြိုးစားပါ ။"],"sound":"","note":"Be resolved not to add to family tension but to be peaceable,"},{"line":["“ အပြစ်ကင်း​တဲ့​သူ​ဆိုလို့ ဘယ်သူမှ မရှိဘူး ။"],"sound":"","note":"just as you should be in any relationship."},{"line":["တစ်ကြိမ်​မဟုတ် တစ်ကြိမ်​တော့ သူတစ်ပါး​ခြေထောက်ကို နင်း​မိ​တတ်ကြ​တာ​ပဲ ။"],"sound":"","note":"“No one is perfect, and we are all going to step on each other’s toes now and then,” says a teenager named Melinda."},{"line":["သင့်တင့်​အောင် နေ​မလား၊ မနေဘူးလား​ဆိုတာ ကိုယ်တိုင် ဆုံးဖြတ်​ရမယ် ” လို့ ဆယ်ကျော်သက် မီ​လင်​ဒါ ပြောတယ် ။"],"sound":"","note":""}],"sound":"","note":"“We just have to decide how we are going to respond—peaceably or otherwise.”"}]
+
+// [
+// 	{sound:"",
+// 	 title:[ 
+// 		{sound:"", wd:'အထူးသဖြင့်', group:"", note:""},
+// 		{sound:"", wd:'မိသားစုမှာ', group:"", note:""},
+// 		{sound:"", wd:'သင့်မြတ်​စွာ', group:"", note:""},
+// 		{sound:"", wd:'နေဖို့', group:"", note:""},
+// 		{sound:"", wd:'ကြိုးစားပါ', group:"", note:""},
+// 		{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 	 ], sound:"", note:"Be a peacemaker—especially in your family." 
+// 	},
     
  
-{ par:[	
-	{ line:[
-			{sound:"", wd:'ကျမ်းစာက', group:"", note:"" }, 
-			{sound:"", wd:'ဒီလို​ဆိုတယ်', group:"", note:"" }, 
-			{sound:"", wd:' – “', group:"", note:"" }, 
-			{sound:"", wd:'ဖြစ်နိုင်မယ်​ဆိုရင်', group:"", note:"" },
-			{sound:"", wd:'လူအားလုံးနဲ့', group:"", note:"" },
-			{sound:"", wd:'သင့်မြတ်​အောင်', group:"", note:"" },
-			{sound:"", wd:'အတတ်နိုင်ဆုံး', group:"", note:"" },
-			{sound:"", wd:'ကြိုးစားပါ', group:"", note:"" },
-			{sound:"", wd:'။” (', group:"", note:"" },
-			{sound:"", wd:'ရောမ', group:"", note:"" },
-			{sound:"", wd:'၁၂:၁၈', group:"", note:"" },
-			{sound:"", wd:')', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"The Bible says: “If possible, as far as it depends on you, be peaceable.” (Romans 12:18)"
-	},
-	{ line:[
-			{sound:"", wd:'တခြား​သူတွေရဲ့', group:"", note:"" }, 
-			{sound:"", wd:'လုပ်ရပ်တွေကို', group:"", note:"" }, 
-			{sound:"", wd:'ထိန်းချုပ်​နိုင်မှာ', group:"", note:"" }, 
-			{sound:"", wd:'မဟုတ်ပေမဲ့', group:"", note:"" },
-			{sound:"", wd:'ကိုယ့်​တုံ့ပြန်ပုံကို​တော့', group:"", note:"" },
-			{sound:"", wd:'ထိန်းချုပ်​နိုင်ပါတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"You can’t fully control the actions of others, but you can control your reaction."
-	},
-	{ line:[
-			{sound:"", wd:'သင့်မြတ်​စွာ', group:"", note:"" }, 
-			{sound:"", wd:'နေဖို့', group:"", note:"" }, 
-			{sound:"", wd:'ရွေးချယ်​နိုင်တယ်', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"You can choose to be peaceable."
-	},
-	], sound:"", note:""
-},
+// { par:[	
+// 	{ line:[
+// 			{sound:"", wd:'ကျမ်းစာက', group:"", note:"" }, 
+// 			{sound:"", wd:'ဒီလို​ဆိုတယ်', group:"", note:"" }, 
+// 			{sound:"", wd:' – “', group:"", note:"" }, 
+// 			{sound:"", wd:'ဖြစ်နိုင်မယ်​ဆိုရင်', group:"", note:"" },
+// 			{sound:"", wd:'လူအားလုံးနဲ့', group:"", note:"" },
+// 			{sound:"", wd:'သင့်မြတ်​အောင်', group:"", note:"" },
+// 			{sound:"", wd:'အတတ်နိုင်ဆုံး', group:"", note:"" },
+// 			{sound:"", wd:'ကြိုးစားပါ', group:"", note:"" },
+// 			{sound:"", wd:'။” (', group:"", note:"" },
+// 			{sound:"", wd:'ရောမ', group:"", note:"" },
+// 			{sound:"", wd:'၁၂:၁၈', group:"", note:"" },
+// 			{sound:"", wd:')', group:"", note:"" },
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"The Bible says: “If possible, as far as it depends on you, be peaceable.” (Romans 12:18)"
+// 	},
+// 	{ line:[
+// 			{sound:"", wd:'တခြား​သူတွေရဲ့', group:"", note:"" }, 
+// 			{sound:"", wd:'လုပ်ရပ်တွေကို', group:"", note:"" }, 
+// 			{sound:"", wd:'ထိန်းချုပ်​နိုင်မှာ', group:"", note:"" }, 
+// 			{sound:"", wd:'မဟုတ်ပေမဲ့', group:"", note:"" },
+// 			{sound:"", wd:'ကိုယ့်​တုံ့ပြန်ပုံကို​တော့', group:"", note:"" },
+// 			{sound:"", wd:'ထိန်းချုပ်​နိုင်ပါတယ်', group:"", note:"" },
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"You can’t fully control the actions of others, but you can control your reaction."
+// 	},
+// 	{ line:[
+// 			{sound:"", wd:'သင့်မြတ်​စွာ', group:"", note:"" }, 
+// 			{sound:"", wd:'နေဖို့', group:"", note:"" }, 
+// 			{sound:"", wd:'ရွေးချယ်​နိုင်တယ်', group:"", note:"" }, 
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"You can choose to be peaceable."
+// 	},
+// 	], sound:"", note:""
+// },
 
  
 
-{ par:[	
-	{ line:[
-			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"" }, 
-			{sound:"", wd:'ရှုမြင်​နိုင်ပုံ', group:"", note:"" }, 
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"How to be realistic:"
-	},
+// { par:[	
+// 	{ line:[
+// 			{sound:"", wd:'အရှိအတိုင်း', group:"", note:"" }, 
+// 			{sound:"", wd:'ရှုမြင်​နိုင်ပုံ', group:"", note:"" }, 
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"How to be realistic:"
+// 	},
        
-	{ line:[
-			{sound:"", wd:'မိသားစု၊', group:"", note:"" }, 
-			{sound:"", wd:'မိတ်ဆွေ​တွေ​ကြားမှာ', group:"", note:"" },
-			{sound:"", wd:'ပြဿနာ', group:"", note:"" }, 
-			{sound:"", wd:'ပို​တင်းမာ​သွား​စေမယ့်​အစား', group:"", note:"" }, 
-			{sound:"", wd:'သင့်မြတ်​အောင်', group:"", note:"" }, 
-			{sound:"", wd:'လုပ်ဆောင်ဖို့', group:"", note:"" },
-			{sound:"", wd:'ကြိုးစားပါ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"Be resolved not to add to family tension but to be peaceable,"
-	},
-	{ line:[
-			{sound:"", wd:'“', group:"", note:"" }, 
-			{sound:"", wd:'အပြစ်ကင်း​တဲ့​သူ​ဆိုလို့', group:"", note:"" }, 
-			{sound:"", wd:'ဘယ်သူမှ', group:"", note:"" }, 
-			{sound:"", wd:'မရှိဘူး', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"just as you should be in any relationship."
-	},
+// 	{ line:[
+// 			{sound:"", wd:'မိသားစု၊', group:"", note:"" }, 
+// 			{sound:"", wd:'မိတ်ဆွေ​တွေ​ကြားမှာ', group:"", note:"" },
+// 			{sound:"", wd:'ပြဿနာ', group:"", note:"" }, 
+// 			{sound:"", wd:'ပို​တင်းမာ​သွား​စေမယ့်​အစား', group:"", note:"" }, 
+// 			{sound:"", wd:'သင့်မြတ်​အောင်', group:"", note:"" }, 
+// 			{sound:"", wd:'လုပ်ဆောင်ဖို့', group:"", note:"" },
+// 			{sound:"", wd:'ကြိုးစားပါ', group:"", note:"" },
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"Be resolved not to add to family tension but to be peaceable,"
+// 	},
+// 	{ line:[
+// 			{sound:"", wd:'“', group:"", note:"" }, 
+// 			{sound:"", wd:'အပြစ်ကင်း​တဲ့​သူ​ဆိုလို့', group:"", note:"" }, 
+// 			{sound:"", wd:'ဘယ်သူမှ', group:"", note:"" }, 
+// 			{sound:"", wd:'မရှိဘူး', group:"", note:"" },
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"just as you should be in any relationship."
+// 	},
    
  
-	{ line:[
-			{sound:"", wd:'တစ်ကြိမ်​မဟုတ်', group:"", note:"" }, 
-			{sound:"", wd:'တစ်ကြိမ်​တော့', group:"", note:"" }, 
-			{sound:"", wd:'သူတစ်ပါး​ခြေထောက်ကို', group:"", note:"" }, 
-			{sound:"", wd:'နင်း​မိ​တတ်ကြ​တာ​ပဲ', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:"“No one is perfect, and we are all going to step on each other’s toes now and then,” says a teenager named Melinda."
-	},
-	{ line:[
-			{sound:"", wd:'သင့်တင့်​အောင်', group:"", note:"" }, 
-			{sound:"", wd:'နေ​မလား၊', group:"", note:"" }, 
-			{sound:"", wd:'မနေဘူးလား​ဆိုတာ', group:"", note:"" }, 
-			{sound:"", wd:'ကိုယ်တိုင်', group:"", note:"" },
-			{sound:"", wd:'ဆုံးဖြတ်​ရမယ်', group:"", note:"" },
-			{sound:"", wd:'”', group:"", note:"" },
-			{sound:"", wd:'လို့', group:"", note:"" },
-			{sound:"", wd:'ဆယ်ကျော်သက်', group:"", note:"" },
-			{sound:"", wd:'မီ​လင်​ဒါ', group:"", note:"" },
-			{sound:"", wd:'ပြောတယ်', group:"", note:"" },
-			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-		], sound:"", note:""
-	},
-	], sound:"", note:"“We just have to decide how we are going to respond—peaceably or otherwise.”"
-},
-]  //END
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-var view_yourself_6 = [
-// 	{sound:"",
-// 	 title:[ 
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 	 ], sound:"", note:"" 
-// 	},
-
-// { par:[	
 // 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
+// 			{sound:"", wd:'တစ်ကြိမ်​မဟုတ်', group:"", note:"" }, 
+// 			{sound:"", wd:'တစ်ကြိမ်​တော့', group:"", note:"" }, 
+// 			{sound:"", wd:'သူတစ်ပါး​ခြေထောက်ကို', group:"", note:"" }, 
+// 			{sound:"", wd:'နင်း​မိ​တတ်ကြ​တာ​ပဲ', group:"", note:"" },
+// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
+// 		], sound:"", note:"“No one is perfect, and we are all going to step on each other’s toes now and then,” says a teenager named Melinda."
+// 	},
+// 	{ line:[
+// 			{sound:"", wd:'သင့်တင့်​အောင်', group:"", note:"" }, 
+// 			{sound:"", wd:'နေ​မလား၊', group:"", note:"" }, 
+// 			{sound:"", wd:'မနေဘူးလား​ဆိုတာ', group:"", note:"" }, 
+// 			{sound:"", wd:'ကိုယ်တိုင်', group:"", note:"" },
+// 			{sound:"", wd:'ဆုံးဖြတ်​ရမယ်', group:"", note:"" },
+// 			{sound:"", wd:'”', group:"", note:"" },
+// 			{sound:"", wd:'လို့', group:"", note:"" },
+// 			{sound:"", wd:'ဆယ်ကျော်သက်', group:"", note:"" },
+// 			{sound:"", wd:'မီ​လင်​ဒါ', group:"", note:"" },
+// 			{sound:"", wd:'ပြောတယ်', group:"", note:"" },
 // 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
 // 		], sound:"", note:""
 // 	},
-// 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
-// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 		], sound:"", note:""
-// 	},
-// 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
-// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 		], sound:"", note:""
-// 	},
-// 	], sound:"", note:""
+// 	], sound:"", note:"“We just have to decide how we are going to respond—peaceably or otherwise.”"
 // },
-
-]  //END
+// ]  //END
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-var view_yourself_7 = [
-// 	{sound:"",
-// 	 title:[ 
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'', group:"", note:""},
-// 		{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 	 ], sound:"", note:"" 
-// 	},
-
-// { par:[	
-// 	{ line:[
-// 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
-// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 		], sound:"", note:""
-// 	},
-// 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
-// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 		], sound:"", note:""
-// 	},
-// 	{ line:[
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" }, 
-// 			{sound:"", wd:'', group:"", note:"" },
-// 			{sound:"", wd:'။', group:"", note:"Period/full stop" }
-// 		], sound:"", note:""
-// 	},
-// 	], sound:"", note:""
-// },
-
-]  //END
+var view_yourself_6 = []  //END
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+var view_yourself_7 = []  //END
 
 
 

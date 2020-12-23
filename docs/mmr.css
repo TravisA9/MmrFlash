@@ -3,7 +3,8 @@
   margin:15px;
   padding: 10px;
 }
-
+body{ background: #bbb; }
+#text{ background: white; }
 /*
 purple:       #7E6988 #C5C0C9 #9A8DA1 #654B73 #4E325C
 red:          #C5969B #FAEEEF #E9CBCE #A66A70 #86454B
@@ -11,12 +12,12 @@ green:        #89AA82 #DBE4D9 #B4CAAF #65905C #45733B
 yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47 
 */
 /* HEADINGS */
-.title{ background: #f9f7f7;
+.title{ background: #7E6988;
   font-weight: bold; text-align: center;
   border-radius: 5px 5px 5px 5px;
   color:#3f3f3f;
 }
-.title:hover{background: lightgrey;}
+.title:hover{background: #4E325C;}
 
 /* PARAGRAPHS */
 .par{ 
@@ -24,10 +25,13 @@ yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47
   padding: 2px 20px 2px 3px;
   border-radius: 5px 5px 5px 5px;
   font-size:20px;
-  background: #C5C0C9;
+  border: thin dashed lightgrey;
 }
 .par:hover{ 
-  background: #7E6988;
+  /*background: #C5C0C9;*/
+  /*background: #7E6988;*/
+  /*background: #CBCB9B;*/
+  background: #FEFFF3;
  }
 
 /* SENTENCES */ 
@@ -36,22 +40,32 @@ yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47
   padding: 2px 20px 2px 3px;
   border-radius: 5px 5px 5px 5px;
   display: inline-block;
-  background: #FEFFF3;
+  border: thin solid lightgrey;
 }
 .line:hover{ 
-  background: #CBCB9B;
+  background: #a9ccdc;
  }
 
 /* WORDS */
 .wd{
-	margin: 4px 1px 4px 1px;
+	margin: 0px;
 	padding: 1px 20px 1px 2px;
 	border-radius: 5px 5px 5px 5px;
 	display: inline-block;
-	background: #DBE4D9;
+	/*background: #DBE4D9;*/
 }
 .wd:hover{background: #89AA82;}
 
+.punct, .Num{ color:blue;
+  font-size: 25px;
+  font-size:20px;
+  padding: 8px 3px 8px 3px;
+  line-height: 2;
+  background: white;
+  cursor: pointer; 
+  border-radius: 3px;
+}
+.punct:hover, .Num:hover{background: #9eb2ff;}
 /* LETTERS */
 .lt{
 	font-size:20px;

@@ -12,59 +12,111 @@
 <body>
 <div style="position:fixed; top:0px; width:100%;">
 <ul>
-    <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn"><strike>Explore</strike></a>
-    <div class="dropdown-content">
-      <a href="javascript:UC();">Sounds</a>
-      <a href="javascript:UC();">Words</a>
-      <a href="javascript:UC();">Sentences</a>
-    </div>
+	<li class="dropdown">
+	<a href="javascript:void(0)" class="dropbtn"><strike>Explore</strike></a>
+	<div class="dropdown-content">
+	  <a href="javascript:UC();">Sounds</a>
+	  <a href="javascript:UC();">Words</a>
+	  <a href="javascript:UC();">Sentences</a>
+	</div>
   </li>
 
-    <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn"><strike>Guess</strike></a>
-    <div class="dropdown-content">
-      <a href="javascript:UC();">Sounds</a>
-      <a href="javascript:UC();">Words</a>
-      <a href="javascript:UC();">Sentences</a>
-    </div>
+	<li class="dropdown">
+	<a href="javascript:void(0)" class="dropbtn"><strike>Guess</strike></a>
+	<div class="dropdown-content">
+	  <a href="javascript:UC();">Sounds</a>
+	  <a href="javascript:UC();">Words</a>
+	  <a href="javascript:UC();">Sentences</a>
+	</div>
   </li>
 
 
   <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn">Reading</a>
-    <div class="dropdown-content">
-      <a href="javascript:showReading(reading);">Resolving problems: family</a>
-      <div style="background:lightblue; padding:8px;">How Can I Avoid Negative Thinking?</div>
-      <a href="javascript:showReading(view_yourself_1);">How do you view yourself?</a>
-      <a href="javascript:showReading(view_yourself_2);">Why does it matter?</a>
-      <a href="javascript:showReading(view_yourself_3);">Keep faults in perspective</a>
-      <a href="javascript:showReading(view_yourself_4);">Avoid comparisons</a>
-      <a href="javascript:showReading(view_yourself_5);">Be peacemaker in your family</a>
-      <a href="javascript:showReading(view_yourself_6);">Cultivate gratitude</a>
-      <a href="javascript:showReading(view_yourself_7);">Examine your friendships</a>
-    </div>
+	<a href="javascript:void(0)" class="dropbtn">Reading</a>
+	<div class="dropdown-content">
+	  <a href="javascript:showParser();">Paste and parse Myanmar</a>
+	  <a href="javascript:showReading(reading);">Resolving problems: family</a>
+	  <div style="background:lightblue; padding:8px;">How Can I Avoid Negative Thinking?</div>
+	  <a href="javascript:showReading(view_yourself_1);">How do you view yourself?</a>
+	  <a href="javascript:showReading(view_yourself_2);">Why does it matter?</a>
+	  <a href="javascript:showReading(view_yourself_3);">Keep faults in perspective</a>
+	  <a href="javascript:showReading(view_yourself_4);">Avoid comparisons</a>
+	  <a href="javascript:showReading(view_yourself_5);">Be peacemaker in your family</a>
+	  <a href="javascript:showReading(view_yourself_6);">Cultivate gratitude</a>
+	  <a href="javascript:showReading(view_yourself_7);">Examine your friendships</a>
+	</div>
   </li>
 
   <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn"><strike>Builder</strike></a>
-    <div class="dropdown-content">
-      <a href="javascript:showBuilder();">Build Sentence</a>
-    </div>
+	<a href="javascript:void(0)" class="dropbtn"><strike>Builder</strike></a>
+	<div class="dropdown-content">
+	  <a href="javascript:showBuilder();">Build Sentence</a>
+	</div>
   </li>
 </ul>
 </div>
 <!-- ////////////////////////////////////////////////////////////////////////////////// -->
 <div id='wrap' class="mmr" style="align-content:center;">
-  <div id='message' style="font size:22px;"></div>
+  <div id='message' style="font-size:22px;"></div>
 	<div id='text' class="mmr" style="width:60%; display:inline-block;" onclick="select(event)"></div>
+
   <div id='info' class="mmr" style="vertical-align:top; position:fixed; top:50px; display:inline-block; width:25%"></div>
+
+<div  id="parser" style="">
+	<div  style="max-width: 700px;">
+	This is an experemntal parser to generate temporary components that will hopefully allow you to explore the text and use it in this app. You can add your text in two ways.<br>
+<br>
+	<b>Method 1 (the easy way):</b><br><br>
+	Just paste the Myanmar text and click <button onclick="parse()">Parse</button><br>
+	<br>
+
+
+	<b>Method 2 (the pretty way):</b><br>
+	Begin by typing the word <b><u>pretty</u></b> and move to the next line. This is to let the app know what you want to do.<br><br>
+
+
+	Two asterisks indicate a 'title': <span class="Num" ><b>**</b>ဆောင်းဦး​ရာသီမှာ</span><br>
+
+	Angle bracket indicates 'line' (sentence): <span class="Num" ><b>></b>ဒါကြောင့် ယေရှုဟာ... </span><br>
+
+	Add a translation to any 'title' or 'line' by just writing it the text on the next line:<br> 
+	<span class="Num" style="display:inline-block;"><b>**</b>ဆောင်းဦး​ရာသီမှာ<br>
+	In the autumn</span><br><br>
+	<br>
+	A consecutive series of 'lines' make a paragraph<br>
+	<br>
+	Add a translation to an entire paragraph withh double angle brackets:<br>
+	<span class="Num" ><b>>></b>Some long translation to the entire paragraph... . ..</span><br>
+<br>
+	Then click <button onclick="parse()">Parse</button><br>
+		
+	</div>
+
+<textarea id="drop" style="width:100%; height: 400px; padding:5px; font-size: 14px;" placeholder="Paste myanmar text here to parse...">pretty
+
+**ဆောင်းဦး​ရာသီမှာ
+In the autumn (translation for title)
+
+>ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ 
+Translation for first sentence
+
+>(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ 
+Translation for second sentence
+
+>ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။
+Translation for third sentence
+
+>>Translation for entire paragraph
+</textarea>
+</div>
+
+<div id="output"></div>
+
+</body>
 </div>
 <!-- ////////////////////////////////////////////////////////////////////////////////// -->
 	
 <!-- <div class="header" id="myHeader"></div> -->
-	
-</body>
 
 
 <script type="text/javascript">
@@ -77,7 +129,7 @@ chooseOne = (a) => a[ Math.floor(Math.random()*a.length) ]
 window.onload = function() {
 
 };
-//////////////////////////////////////////////////////////////////////////////////////////
+
 </script>
 <script src="js/mmr.js" type="text/javascript"></script>
 <script src="js/audio.js" type="text/javascript"></script>
@@ -86,5 +138,88 @@ window.onload = function() {
 <!-- <script src="js/guess.js" type="text/javascript"></script> -->
 <script src="js/builder.js" type="text/javascript"></script>
 <script src="js/reader.js" type="text/javascript"></script>
+<script type="text/javascript">
+  //////////////////////////////////////////////////////////////////////////////////////////
+function clean(str){
+ 	return str.replace(/^(?:[\s\*>]*)(.)/g, "$1");  // (/^\s*\*\*(.)/, "")
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+function getLineTrans(res, i){
+	trans = clean(res[i]) // Get and clean string
+	res.splice(i, 1);     // Delete from array
+	res[i-1].note = trans // Add to preceding node
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+function showParser(){
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+function firstPass(res){
+	var i = 0;
+
+	for(var t = 0; t < res.length; t++){
+		if(/^(\s*\*\*)/.test(res[t])){
+			res[t] = { title:[ clean(res[t]) ], sound:"", note:'No translation available.' }
+		} else
+		if(/^(\s*>[^>])/.test(res[t])){ 
+			res[t] = { line:[ clean(res[t]) ], sound:"", note:'No translation available.' }
+		}
+	}
+	// Had to seperate this out since it conflicted with other loop tests :/
+	for(var i = 0; i < res.length; i++){
+		if(typeof(res[i])=="string" && !/^(\s*>>)/.test(res[i])){
+			getLineTrans(res, i)
+		}
+	}
+
+	for(var j = 0; j < res.length; j++){
+		if( typeof(res[j])!="string" && 'line' in res[j]){ 
+			var offset = 0
+			var node = { par:[], sound:"", note:""}
+			while( typeof(res[j+offset])!="string" && 'line' in res[j+offset]){ 
+				node.par.push(res[j+offset])
+				offset++ 
+			}
+			res[j] = node
+			res.splice(j+1, j+offset-2);
+		}
+		// if('title' in res[j]) {}
+		//res[j]
+	}
+
+	for(var i = 0; i < res.length; i++){
+		if(typeof(res[i])=="string" && /^(\s*>>)/.test(res[i])){
+			getLineTrans(res, i)
+		}
+	}
+	showReading(res)
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+function parse(){
+	var text = $("drop").value, res = [];
+	// PRETTY DUMP
+	if(/^\s*pretty/.test(text)){
+		text = text.replace(/^(?:\s*pretty[\s\n\r]*)/g, "");
+		res = text.split(/\n/) 
+		res = res.filter( function(el){ return el != '' && el != ' '; } );
+		firstPass(res)
+	} else // UGLY DUMP
+	if(/^(\s*\*\*)/.test(res[0])){
+		res[0] = getTitle(res,0)
+	}
+	//$("output").innerHTML = JSON.stringify(res)
+}
+
+// ["**ဆောင်းဦး​ရာသီမှာ",">translation",
+
+// "ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်",">Something",
+
+// "(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ",">Translation...",
+
+// "ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်","—လုကာ ၃:၂၃",">Translated sentence"]
+
+</script>
 </html>
 
