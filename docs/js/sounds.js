@@ -84,9 +84,6 @@ letters = [
 
 
 
-
-
-
 {sound:"", txt:"က", note:"k" },
 {sound:"", txt:"ကင်", note:"kain" },
 {sound:"", txt:"ကင်း", note:"kainn" },
@@ -692,6 +689,6 @@ letters = [
 
 {sound:"", txt:"ဦး", note:"u" },
 
-{sound:"", txt:"၊", note:"(,)" },
+{sound:"", txt:"၊", note:"comma" },
 {sound:"", txt:"။", note:"A period" },
 ]

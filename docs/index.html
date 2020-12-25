@@ -62,52 +62,90 @@
 
   <div id='info' class="mmr" style="vertical-align:top; position:fixed; top:50px; display:inline-block; width:25%"></div>
 
+<style type="text/css">
+	.container{background: white;}
+	.bar{background:black;}
+	.page{padding:10px;}
+	button{padding:10px; margin:0px; background: black; border:none; color: white; font-weight: bold;}
+	button:hover{background:tomato;}
+</style>
+
 <div  id="parser" style="">
-	<div  style="max-width: 700px;">
-	This is an experemntal parser to generate temporary components that will hopefully allow you to explore the text and use it in this app. You can add your text in two ways.<br>
-<br>
-	<b>Method 1 (the easy way):</b><br><br>
-	Just paste the Myanmar text and click <button onclick="parse()">Parse</button><br>
-	<br>
 
+  <div class="container">
+  <div class="bar w3-black">
+    <button class="w3-bar-item w3-button tablink w3-red" onclick="openpage(event,'London')">How to Use</button>
+    <button class="w3-bar-item w3-button tablink" onclick="openpage(event,'Tokyo')">Example</button>
+    <button class="w3-bar-item w3-button tablink" onclick="openpage(event,'Paris')">Parser</button>
+    <button onclick="parse()" style="float:right;">Parse</button>
+  </div>
+  
+<!-- //////////////////////////////////////////////////////////////////// -->
+  <div id="London" class="w3-container w3-border page">
+	This is an experemntal parser to generate temporary components that will hopefully allow you to explore the text and use it in this app. You can add your text in two ways. You can just paste the Myanmar text and click Parse in the upper rigt corner. Or you can do it the pretty way.<br><br>
 
-	<b>Method 2 (the pretty way):</b><br>
+	<b>Pretty way:</b><br>
 	Begin by typing the word <b><u>pretty</u></b> and move to the next line. This is to let the app know what you want to do.<br><br>
 
 
 	Two asterisks indicate a 'title': <span class="Num" ><b>**</b>ဆောင်းဦး​ရာသီမှာ</span><br>
 
-	Angle bracket indicates 'line' (sentence): <span class="Num" ><b>></b>ဒါကြောင့် ယေရှုဟာ... </span><br>
+	One asterisk indicates 'line' (sentence): <span class="Num" ><b>*</b>ဒါကြောင့် ယေရှုဟာ... </span><br>
 
 	Add a translation to any 'title' or 'line' by just writing it the text on the next line:<br> 
 	<span class="Num" style="display:inline-block;"><b>**</b>ဆောင်းဦး​ရာသီမှာ<br>
 	In the autumn</span><br><br>
-	<br>
-	A consecutive series of 'lines' make a paragraph<br>
-	<br>
-	Add a translation to an entire paragraph withh double angle brackets:<br>
-	<span class="Num" ><b>>></b>Some long translation to the entire paragraph... . ..</span><br>
+	Consecutive 'lines' (with or without translations) make a paragraph.<br>
+	Add a translation to an entire paragraph with double angle brackets:<br>
+	<span class="Num" ><b>></b>Some long translation to the entire paragraph... . ..</span><br>
 <br>
-	Then click <button onclick="parse()">Parse</button><br>
+	Then click Parse<br>
+  </div>
+<!-- //////////////////////////////////////////////////////////////////// -->
+  <div id="Paris" class="w3-container w3-border page" style="display:none">
+<textarea id="drop" style="width:100%; height: 400px; padding:5px; font-size: 14px;" placeholder="Paste myanmar text here to parse...">pretty
+
+** ဆောင်းဦး​ရာသီမှာ
+In the autumn (translation for title)
+
+* ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ 
+Translation for first sentence
+
+* (ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ 
+Translation for second sentence
+
+* ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။
+Translation for third sentence
+
+> Translation for entire paragraph
+</textarea>
+  </div>
+<!-- //////////////////////////////////////////////////////////////////// -->
+  <div id="Tokyo" class="w3-container w3-border page" style="display:none">
+pretty<br>
+
+**ဆောင်းဦး​ရာသီမှာ<br>
+In the autumn (translation for title)<br><br>
+
+>ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ <br>
+Translation for first sentence<br><br>
+
+>(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ <br>
+Translation for second sentence<br><br>
+
+>ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။<br>
+Translation for third sentence<br><br>
+
+>>Translation for entire paragraph<br><br>
+  </div>
+</div>
+
+	<div  style="max-width: 700px;">
+
 		
 	</div>
 
-<textarea id="drop" style="width:100%; height: 400px; padding:5px; font-size: 14px;" placeholder="Paste myanmar text here to parse...">pretty
 
-**ဆောင်းဦး​ရာသီမှာ
-In the autumn (translation for title)
-
->ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ 
-Translation for first sentence
-
->(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ 
-Translation for second sentence
-
->ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။
-Translation for third sentence
-
->>Translation for entire paragraph
-</textarea>
 </div>
 
 <div id="output"></div>
@@ -138,6 +176,7 @@ window.onload = function() {
 <!-- <script src="js/guess.js" type="text/javascript"></script> -->
 <script src="js/builder.js" type="text/javascript"></script>
 <script src="js/reader.js" type="text/javascript"></script>
+<script src="js/general.js" type="text/javascript"></script>
 <script type="text/javascript">
   //////////////////////////////////////////////////////////////////////////////////////////
 function clean(str){
@@ -159,16 +198,17 @@ function firstPass(res){
 	var i = 0;
 
 	for(var t = 0; t < res.length; t++){
-		if(/^(\s*\*\*)/.test(res[t])){
+		if(/^(\s*\*\*\s*)/.test(res[t])){ // Title identified.
 			res[t] = { title:[ clean(res[t]) ], sound:"", note:'No translation available.' }
 		} else
-		if(/^(\s*>[^>])/.test(res[t])){ 
+		if(/^(\s*\*\s*)/.test(res[t])){ // Line/sentence found.
 			res[t] = { line:[ clean(res[t]) ], sound:"", note:'No translation available.' }
 		}
 	}
+	// NOT Paragraph translation
 	// Had to seperate this out since it conflicted with other loop tests :/
 	for(var i = 0; i < res.length; i++){
-		if(typeof(res[i])=="string" && !/^(\s*>>)/.test(res[i])){
+		if(typeof(res[i])=="string" && !/^(\s*>\s*)/.test(res[i])){
 			getLineTrans(res, i)
 		}
 	}
@@ -184,12 +224,11 @@ function firstPass(res){
 			res[j] = node
 			res.splice(j+1, j+offset-2);
 		}
-		// if('title' in res[j]) {}
-		//res[j]
 	}
 
+	// Paragraph Translation
 	for(var i = 0; i < res.length; i++){
-		if(typeof(res[i])=="string" && /^(\s*>>)/.test(res[i])){
+		if(typeof(res[i])=="string" && /^(\s*>)/.test(res[i])){
 			getLineTrans(res, i)
 		}
 	}
@@ -205,20 +244,19 @@ function parse(){
 		res = text.split(/\n/) 
 		res = res.filter( function(el){ return el != '' && el != ' '; } );
 		firstPass(res)
-	} else // UGLY DUMP
-	if(/^(\s*\*\*)/.test(res[0])){
-		res[0] = getTitle(res,0)
+	} else { // UGLY DUMP
+		text = text.replace(/။/g, "။\n");
+		text = text.replace(/\n+/g, "\n");
+		res = text.split(/\n/)
+		for(var t = 0; t < res.length; t++){
+			res[t] = { line:[ res[t] ], sound:"", note:'No translation provided.' }
+		}
+		var node = [{ par:res, sound:"", note:"Sorry, translation provided."}]
+		showReading(node)
 	}
 	//$("output").innerHTML = JSON.stringify(res)
 }
 
-// ["**ဆောင်းဦး​ရာသီမှာ",">translation",
-
-// "ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်",">Something",
-
-// "(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ",">Translation...",
-
-// "ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်","—လုကာ ၃:၂၃",">Translated sentence"]
 
 </script>
 </html>

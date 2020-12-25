@@ -279,7 +279,7 @@ var dict = [
 
 {sound:"", wd:"၀", group:"Num", note:"Number: 0 <br>Written form: သုည (suny)" },
 {sound:"", wd:"၁", group:"Num", note:"Number: 1 <br>Written form: တစ်ခု (taithku)" },
-{sound:"", wd:"၂", group:"Num", note:"Number: 2 <br>Written form: နှစ် (nhait)" },
+{sound:"", wd:"၂",  group:"Num", note:"Number: 2 <br>Written form: နှစ် (nhait)" },
 {sound:"", wd:"၃", group:"Num", note:"Number: 3 <br>Written form: သုံး (sone)" },
 {sound:"", wd:"၄", group:"Num", note:"Number: 4 <br>Written form: လေး (layy)" },
 {sound:"", wd:"၅", group:"Num", note:"Number: 5 <br>Written form: ငါး (ngarr)" },

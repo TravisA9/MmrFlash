@@ -25,9 +25,11 @@ function segment(text) {
 //////////////////////////////////////////////////////////////////////////////////
 segmentWithSeparator = (text, separator = "|") => text.replace(BREAK_PATTERN, separator + "$1");
 //////////////////////////////////////////////////////////////////////////////////////////
-function print(str){          var s = ''
+function print(str, code=false){          var s = ''
 	for (var i = 0; i < str.length; i++){ 
-		s += ` ${str[i]} &#${str.charCodeAt(i)};`; }
+		s += `${str[i]} `; 
+		if(code) s += ` ${str[i]} &#${str.charCodeAt(i)};`; 
+	}
 	return s
 }
 // print("ဆွေး")  // print our code points in HTML campatible format.
