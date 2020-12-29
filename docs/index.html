@@ -164,7 +164,21 @@ $ = (sel) => document.getElementById(sel);
 chooseOne = (a) => a[ Math.floor(Math.random()*a.length) ]
 /////////////////////////////////////////UTILITY//////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
+// https://www.npmjs.com/package/serve
+//////////////////////////////////////////////////////////////////////////////
 window.onload = function() {
+	fetch('modules.html')
+		.then((response) => {
+			return response.text();
+		})
+		.then((html) => {
+		$('text').innerHTML = html     
+		    // Convert the HTML string into a document object
+		    var parser = new DOMParser();
+		    var doc = parser.parseFromString(html, 'text/html');
+			var components = doc.querySelectorAll('[data-bug]');
+		    $('text').innerHTML = components[1].outerHTML;
+		});
 
 };
 
