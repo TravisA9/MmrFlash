@@ -4,7 +4,11 @@
   padding: 10px;
 }
 body{ background: #bbb; }
-#text{ background: white; }
+  #wrap{ align-content:center; }
+  #message{ font-size:22px; }
+  #text{ width:60%; display:inline-block; background: white; }
+  #info{ vertical-align:top; position:fixed; top:50px; display:inline-block; width:25%; }
+
 /*
 purple:       #7E6988 #C5C0C9 #9A8DA1 #654B73 #4E325C
 red:          #C5969B #FAEEEF #E9CBCE #A66A70 #86454B
@@ -12,25 +16,25 @@ green:        #89AA82 #DBE4D9 #B4CAAF #65905C #45733B
 yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47 
 */
 /* HEADINGS */
-.title{ background: #7E6988;
+.title{ color: #7E6988;
+  font-size: 25px;
   font-weight: bold; text-align: center;
   border-radius: 5px 5px 5px 5px;
   color:#3f3f3f;
+  background: #FEFFF3;
 }
-.title:hover{background: #4E325C;}
+.title:hover{color: #4E325C;
+  border: thin solid grey;}
 
 /* PARAGRAPHS */
 .par{ 
   margin: 4px 1px 4px 1px;
   padding: 2px 20px 2px 3px;
   border-radius: 5px 5px 5px 5px;
-  font-size:20px;
-  border: thin dashed lightgrey;
+  font-size:18px;
+  border: thin dashed grey;
 }
 .par:hover{ 
-  /*background: #C5C0C9;*/
-  /*background: #7E6988;*/
-  /*background: #CBCB9B;*/
   background: #FEFFF3;
  }
 
@@ -54,11 +58,21 @@ yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47
 	display: inline-block;
 	/*background: #DBE4D9;*/
 }
-.wd:hover{background: #89AA82;}
+.wd:hover{background:#77AFF7;}
+/* SUBWORDS */
+.sub{
+  margin: 1px 1px 1px 0px;
+  padding: 8px 0px 8px 0px;
+  border-radius: 3px;
+  overflow:visible;
+  background: white;
+}
+.sub:hover{
+  border:thin solid blue;
+  /*background: #89AA82;*/
+}
 
 .punct, .Num{ color:blue;
-  font-size: 25px;
-  font-size:20px;
   padding: 8px 3px 8px 3px;
   line-height: 2;
   background: white;
@@ -68,11 +82,10 @@ yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47
 .punct:hover, .Num:hover{background: #9eb2ff;}
 /* LETTERS */
 .lt{
-	font-size:20px;
 	padding: 8px 1px 8px 1px;
 	line-height: 2;
-	background: white;
   cursor: pointer;
+  overflow:visible;
 }
 .lt:hover{background: #9eb2ff;}
 
@@ -83,8 +96,6 @@ yellow-green: #CBCB9B #FEFFF3 #F0F1D1 #ABAC6E #898A47
 .lt:last-child{
   border-radius: 0px 3px 3px 0px;
 }
-
-
 
 .info{ padding:10px; width:100%;
   float:right; border: thin solid #45733B; background:#DBE4D9;}

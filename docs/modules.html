@@ -1,4 +1,114 @@
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->
+<div data-bug="reading" id='message' >
+	<div id='wrap' class="mmr">
+		<div data-bug="message" id='message' ></div>
+		<div data-bug="text" id='text' class="mmr" onclick="select(event)"></div>
+		<div data-bug="info" id='info' class="mmr" ></div>	
+		<div id="output"></div>
+	</div>
+</div>
 
-<div data-bug="greeting" style="padding:10px; border:thin solid blue;">Hello friends</div>
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->
+<div data-bug="message" id='message' ></div>
 
-<div data-bug="green" style="padding:10px; border:thin solid green; background:lightgreen;">Hello friends</div>
+
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->
+<div data-bug="text" id='text' class="mmr" onclick="select(event)"></div>
+
+
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->
+<div data-bug="info" id='info' class="mmr" ></div>
+
+
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->
+<div data-bug="parser" id="parser">
+	<div id='wrap' class="mmr">
+		<div data-bug="message" id='message' ></div>
+		<div data-bug="text" id='text' class="mmr" onclick="select(event)"></div>
+		<div data-bug="info" id='info' class="mmr" ></div>	
+<div class="container">
+	<style type="text/css">
+		.container{background: white;}
+		.bar{background:black;}
+		.page{padding:10px;}
+		button{padding:10px; margin:0px; background: black; border:none; color: white; font-weight: bold;}
+		button:hover{background:tomato;}
+	</style>
+	<div class="bar">
+		<button class="tablink w3-red" onclick="openpage(event,'HowTo')">How to Use</button>
+		<button class="tablink" onclick="openpage(event,'Example')">Example</button>
+		<button class="tablink" onclick="openpage(event,'Psr')">Parser</button>
+		<button onclick="parse()" style="float:right;">Parse</button>
+	</div>
+  
+<!-- //////////////////////////////////////////////////////////////////// -->
+	<div id="HowTo" class="w3-container w3-border page">
+	This is an experemntal parser to generate temporary components that will hopefully allow you to explore the text and use it in this app. You can add your text in two ways. You can just paste the Myanmar text and click Parse in the upper rigt corner. Or you can do it the pretty way.<br><br>
+
+	<b>Pretty way:</b><br>
+	Begin by typing the word <b><u>pretty</u></b> and move to the next line. This is to let the app know what you want to do.<br><br>
+
+
+	Two asterisks indicate a 'title': <span class="Num" ><b>**</b>ဆောင်းဦး​ရာသီမှာ</span><br>
+
+	One asterisk indicates 'line' (sentence): <span class="Num" ><b>*</b>ဒါကြောင့် ယေရှုဟာ... </span><br>
+
+	Add a translation to any 'title' or 'line' by just writing it the text on the next line:<br> 
+	<span class="Num" style="display:inline-block;"><b>**</b>ဆောင်းဦး​ရာသီမှာ<br>
+	In the autumn</span><br><br>
+	Consecutive 'lines' (with or without translations) make a paragraph.<br>
+	Add a translation to an entire paragraph with double angle brackets:<br>
+	<span class="Num" ><b>></b>Some long translation to the entire paragraph... . ..</span><br>
+	<br>
+	Then click Parse<br>
+	</div>
+<!-- //////////////////////////////////////////////////////////////////// -->
+	<div id="Psr" class="w3-container w3-border page" style="display:none">
+	<textarea id="drop" style="width:100%; height: 400px; padding:5px; font-size: 14px;" placeholder="Paste myanmar text here to parse...">pretty
+
+	** ဆောင်းဦး​ရာသီမှာ
+	In the autumn (translation for title)
+
+	* ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ 
+	Translation for first sentence
+
+	* (ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ 
+	Translation for second sentence
+
+	* ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။
+	Translation for third sentence
+
+	> Translation for entire paragraph
+	</textarea>
+	</div>
+<!-- //////////////////////////////////////////////////////////////////// -->
+	<div id="Example" class="w3-container w3-border page" style="display:none">
+	pretty<br>
+
+	**ဆောင်းဦး​ရာသီမှာ<br>
+	In the autumn (translation for title)<br><br>
+
+	>ယေရှု သေဆုံး​သွား​ချိန်​ဖြစ်တဲ့ ခရစ်နှစ် ၃၃၊ နွေဦး၊ နိသန်လ ၁၄ ရက်၊ ပသခါပွဲနေ့​ကနေ နောက်​ပြန်​ရေတွက်​ကြည့်မယ်​ဆိုရင် ယေရှု ဘယ်​အချိန်မှာ မွေးတယ်​ဆိုတာကို တွက်ချက်​နိုင်ပါတယ်။ <br>
+	Translation for first sentence<br><br>
+
+	>(ယောဟန် ၁၉:၁၄–၁၆) သုံးနှစ်ခွဲ​ကြာ​တဲ့ အမှုဆောင်ခြင်း​လုပ်ငန်းကို ယေရှု စတင်​ခဲ့​တုန်း​က ကိုယ်တော်ရဲ့​အသက်​က ၃၀ လောက်​ရှိပါ​ပြီ။ <br>
+	Translation for second sentence<br><br>
+
+	>ဒါကြောင့် ယေရှုဟာ ဘီစီ  ၂ ၊ ဆောင်းဦး​ရာသီမှာ မွေးဖွား​ခဲ့​တာ​ဖြစ်တယ်။—လုကာ ၃:၂၃။<br>
+	Translation for third sentence<br><br>
+
+	>>Translation for entire paragraph<br><br>
+	</div>
+</div>
+		<div id="output"></div>
+	</div>
+</div>
+
+
+<!-- //////////////////////////////////////////////////////////////////// -->
+<!-- //////////////////////////////////////////////////////////////////// -->

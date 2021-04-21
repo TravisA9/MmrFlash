@@ -1,53 +1,57 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
 var selectedText = ''
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
 function showReading(text){
-	parseOutline(text)
+	build(['menu','reading'], 'body', function(){ 
+		parseOutline(text)
 
-	$('message').innerHTML = ''
-	playlist = {} // Clean out!
-    addAudio("tic", "ogg");
-    addAudio("bloop", "ogg");
-	$('text').innerHTML = '';
-	for (var i = 0; i < selectedText.length; i++) {
-		let node = selectedText[i];
-		if('title' in node){
-			addAudio(node.sound, "mp3");
-			$('text').innerHTML += `<div class="title" id="${i}">${makeWord(node['title'])}</div>`
-		} else if('par' in node){
-			addAudio(node.sound, "mp3");
-			$('text').innerHTML += `<div class="par" id="${i}">${makeSentence(node['par'])}</div>`
-		} 
-	}
+		playlist = {} // Clean out!
+	    addAudio("tic", "ogg");
+	    addAudio("bloop", "ogg");
+		for (var i = 0; i < selectedText.length; i++) {
+			let node = selectedText[i];
+			if('title' in node){
+				addAudio(node.sound, "mp3");
+				$('text').innerHTML += `<div class="title" id="${i}">${makeWord(node['title'])}</div>`
+			} else if('par' in node){
+				addAudio(node.sound, "mp3");
+				$('text').innerHTML += `<div class="par" id="${i}">${makeSentence(node['par'])}</div>`
+			} 
+		}
+	});
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
 function makeSentence(sentences){        var str = ''
 	for (var j = 0; j < sentences.length; j++){
 		addAudio(sentences.sound, "mp3");
-		str += `<span class="line" id="${j}">${makeWord(sentences[j].line)}</span>`;
-	}
+		str += `<span class="line" id="${j}">${makeWord(sentences[j].line)}</span>`;	}
 	return str
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// '။'
-function makeWord(words){           var str = ''
-
+function makeWord(words){           var str = '';
 	for (var j = 0; j < words.length; j++){	
-
 		addAudio(words[j].sound, "mp3");
-
 		if(words[j].group === "Num"){
 			str += `<span class="Num" id="${j}">${words[j].wd}</span>`;
 		} else if(words[j].group === "punct"){
 			str += `<span class="punct" id="${j}">${words[j].wd}</span>`;
 		} else {
-			var wd = '', word = segment(words[j].wd)
-			for (var i = 0; i < word.length; i++){			
-				wd += `<span class="lt" id="${i}">${word[i]}</span>`;
-			}
-			str += `<span class="wd" id="${j}">${wd}</span>`;
+			str += `<span class="wd" id="${j}">${subword(words[j].wd)}</span>`;
 		} 
-
 	} 
 	return str
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+function subword(word){                 var subs = word.split('​'), str = ''
+	for (var i = 0; i < subs.length; i++){
+		str += '<span class="sub">' + getLetters(subs[i]) + '</span>';	}
+	return str;
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+function getLetters(w){                var subw = segment(w), str = ''
+	for (var i = 0; i < subw.length; i++){	//subword(word)		
+		str += `<span class="lt" id="${i}">${subw[i]}</span>`;	}
+	return str;
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 // Model for reading structure:
@@ -63,14 +67,10 @@ function parseOutline(outline){
 	for (var h = 0; h < outline.length; h++){
 		var node = selectedText[h]
 		if('title' in node){
-			node.title = parseSentence(node.title[0])
-			// console.log(JSON.stringify(node))
-		} 
+			node.title = parseSentence(node.title[0]); } 
 		else if('par' in node){ var lines = node.par
 			for (var j = 0; j < lines.length; j++){	
-				lines[j].line  = parseSentence(lines[j].line[0] )
-			}
-			// console.log(JSON.stringify(node))
+				lines[j].line  = parseSentence(lines[j].line[0] );	}
 		}
 	}
 }
@@ -80,7 +80,7 @@ function parseOutline(outline){
 function Compress(obj){
 
 	function words(arr){ var first = arr[0]
-		for (var i = 1; i < arr.length; i++) {
+		for (var i = 1; i < arr.length; i++){
 			first.wd += ' ' + arr[i].wd
 		}
 		return [ first.wd ]
@@ -89,14 +89,11 @@ function Compress(obj){
 	for (var h = 0; h < obj.length; h++){
 		var node = obj[h]
 
-
-
 		if('title' in node){
 			var array = node.title
 			node.title = words(array)
 			//console.log(JSON.stringify(node))
 		} 
-
 
 		else if('par' in node){ var lines = node.par
 			for (var j = 0; j < lines.length; j++){	
@@ -114,12 +111,25 @@ function Compress(obj){
 // 	res = res.replace(/\s+/g, " "); // collapse whitespace
 // 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
 // 	words = res.split(' ')
+
+// var array = []
+// for (var i = 0; i < dict.length; i++){
+// 	let s = dict[i].wd.split('​')
+// 	array.push( ...s );
+// }
+// array = [...new Set(array)];
+// array = array.sort();
+// var subWords = []
+// for (var i = 0; i < array.length; i++){
+// 	subWords.push({ wd:array[i], note:""})
+// }
+// 	console.log(JSON.stringify(array))
 //////////////////////////////////////////////////////////////////////////////////////////
 function parseSentence(sent){
 	//  ၀၁၂၃၄၅၆၇၈၉
 
 	var res = sent.replace(/([():;,\-–—။၊“”၀၁၂၃၄၅၆၇၈၉])/g, " $1 "); // Seperate punctuation
-	res = res.replace(/\s+/g, " "); // collapse whitespace
+	res = res.replace(/[\t\s]+/g, " "); // collapse whitespace
 	if(res[res.length-1] === ' '){ res = res.substring(0, res.length-1);}
 	if(res[0] === ' '){ res = res.substring(1, res.length);}
 	var words = res.split(' ')
@@ -137,6 +147,55 @@ function parseSentence(sent){
 	}
 	return array;
 }
+//////////////////////////////////////////////////////////////////////////////////////////
+var promises = [{
+title:[ 'ကောင်း​မြတ်​တဲ့ ကတိတော်​တွေ​ကို ဘုရားသခင် ဖော်ပြ​ပုံ'
+], sound:"", note:"How God Gives Good Promises"},
+
+{par:[
+{line:[ 'ဘုရားသခင့် သတင်း​စကား​တွေ​ကို သမ္မာကျမ်းစာ​ထဲမှာ တွေ့နိုင်တယ်။'
+], sound:"", note:"God's message can be found in the Bible. "},
+{line:[ '(၂ တိမောသေ ၃:၁၆) ဘုရား​ရဲ့​ သတင်း​စကား​တွေ​ကို ပရောဖက်​တွေ ဘယ်လို ရေးသားခဲ့​ကြသလဲ။'
+], sound:"", note:"(2 Timothy 3:16) How did the prophets write God's message? "},
+{line:[ ' (၂ ပေတရု ၁:၂၁) ဘုရားသခင်​က မိမိရဲ့​ အတွေး​တွေ​ကို ကျမ်း​ရေးသူတွေ​စိတ်ထဲ ထည့်​ပေး​ပြီး ချရေး​စေတယ်။'
+], sound:"", note:"(2 Peter 1:21) God put his thoughts in the minds of Bible writers."},
+{line:[ 'ဥပမာ​ပြော​ရ​ရင် စီးပွားရေး​လုပ်ငန်းရှင် တစ်ယောက်က သူ့ကိုယ်စား အတွင်းရေးမှူး​ကို စာရေး​ခိုင်းတယ်။'
+], sound:"", note:"For example, a businessman asks a secretary to write on his behalf."},
+{line:[ 'အဲဒီ​စာ​ကို စီးပွားရေး​လုပ်ငန်းရှင်​ရဲ့​ စာ​လို့​ပဲ ကျွန်တော်​တို့ သတ်မှတ်တယ်။'
+], sound:"", note:"We consider it a business letter."},
+{line:[ 'အဲဒီလိုပဲ ဘုရားသခင်​က မိမိရဲ့​ သတင်းစကားကို ရေး​ဖို့ လူတွေကို သုံး​ပေမဲ့ ကျမ်းစာ​ရဲ့​ အာဘော်ရှင်​က​တော့ ဘုရားသခင်​ပါ​ပဲ။'
+], sound:"", note:"In the same way, God uses people to write His message, but God is the Author of the Bible."}
+], sound:"", note:"God's message can be found in the Bible. (2 Timothy 3:16) How did the prophets write God's message? (2 Peter 1:21) God put his thoughts in the minds of Bible writers. For example, a businessman asks a secretary to write on his behalf. We consider it a business letter. In the same way, God uses people to write His message, but God is the Author of the Bible."},
+
+{title:[ 'ကျမ်းစာ​ကို အလွယ်တကူ ရနိုင်'
+],sound:"",note:"The Bible is readily available"},
+
+{par:[
+{line:[ 'ဘုရားသခင့်​ သတင်း​စကား​က သိပ်​အရေးကြီး​လို့ ဘုရား​က လူတိုင်းကို ဖတ်​စေ​ချင်၊ နားလည်​စေချင်တယ်။'
+],sound:"",note:"The message of God is so important that God wants everyone to read it. I want you to understand."},
+{line:[ 'အခုချိန်မှာ “ထာဝရ​သတင်းကောင်း” ကို “လူမျိုး၊ လူမျိုးနွယ်၊ ဘာသာ​စကား​အမျိုးမျိုး ပြော​တဲ့​လူတွေ” အလွယ်တကူ ရနိုင်​ပြီ။'
+],sound:"",note:"Right now, the “everlasting good news” is being used to describe people, Ethnicity \"People who speak different languages.\""},
+{line:[ '(ဗျာဒိတ် ၁၄:၆) သမ္မာကျမ်းစာ​ကို ဘာသာ​စကား ၃,၀၀၀ ကျော်​နဲ့ ဖတ်​နိုင်ပြီ။'
+],sound:"",note:"(Revelation 14: 6) The Bible is now available in over 3,000 languages."},
+{line:[ 'ကမ္ဘာ​ပေါ်မှာ အဲဒီလောက်​များတဲ့ ဘာသာ​စကား​နဲ့ ဘာသာပြန်​ထား​တဲ့ စာအုပ် မရှိဘူး။'
+],sound:"",note:"There is no book in the world that has been translated into so many languages."}
+],sound:"",note:"The message of God is so important that God wants everyone to read it. I want you to understand. Right now, the “everlasting good news” is being used to describe people, Ethnicity \"People who speak different languages.\" (Revelation 14: 6) The Bible is now available in over 3,000 languages. There is no book in the world that has been translated into so many languages."},
+
+
+{par:[
+{line:[ 'ဘုရားသခင်​ဟာ လူသားတွေကို ဖန်ဆင်း​ချိန်​ကစပြီး ကောင်းကင်တမန်​တွေ၊ ပရောဖက်​တွေ​က​တစ်ဆင့် လူတွေနဲ့ ဆက်သွယ်​တယ်။'
+],sound:"",note:"God created humans, including angels, and humans. He communicated with people through the prophets."},
+{line:[ 'အဲဒီအပြင် မိမိရဲ့ သတင်း​စကား​တွေ၊ ကတိတော်​တွေ​ကို ရေးသား​ပြီး မှတ်တမ်းတင်​စေတယ်။'
+],sound:"",note:"In addition, to his messages, He makes promises and writes them down."},
+{line:[ 'ပျော်ရွှင်ဖွယ် အနာဂတ်​ ရှိတယ်လို့ ဘုရား​ ကတိပေး​ထား​တယ်။'
+],sound:"",note:"God promises a happy future."},
+{line:[ 'ဒါဆို အခု​ချိန်မှာ ဘုရားသခင့်​ကတိ​တွေ​ကို ဘယ်မှာ တွေ့​နိုင်​သလဲ။'
+],sound:"",note:"Where, then, can we find God's promises now?"}
+],sound:"",note:"God created humans, including angels, and humans. He communicated with people through the prophets. In addition, your messages, He makes promises and writes them down. God promises a happy future. Where, then, can we find God's promises now?"}
+
+
+
+] // END article
 //////////////////////////////////////////////////////////////////////////////////////////
 var reading = [
 	{ title:[ 'ပြဿနာတွေ ဆွေးနွေးနိုင်ပုံ' ], 
@@ -215,7 +274,7 @@ var view_yourself_1 = [
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-
+// https://www.jw.org/my/%E1%80%85%E1%80%AC%E1%80%80%E1%80%BC%E1%80%8A%E1%80%B7%E1%80%BA%E1%80%90%E1%80%AD%E1%80%AF%E1%80%80%E1%80%BA/%E1%80%99%E1%80%82%E1%80%B9%E1%80%82%E1%80%87%E1%80%84%E1%80%BA%E1%80%B8%E1%80%99%E1%80%BB%E1%80%AC%E1%80%B8/%E1%80%94%E1%80%AD%E1%80%AF%E1%80%B8%E1%80%9C%E1%80%B1%E1%80%AC%E1%80%B7-%E1%80%A1%E1%80%99%E1%80%BE%E1%80%90%E1%80%BA%E1%81%83-%E1%81%82%E1%81%80%E1%81%81%E1%81%86-%E1%80%87%E1%80%BD%E1%80%94%E1%80%BA/%E1%80%A1%E1%80%AD%E1%80%99%E1%80%BA%E1%80%91%E1%80%B1%E1%80%AC%E1%80%84%E1%80%BA-%E1%80%95%E1%80%BC%E1%80%BF%E1%80%94%E1%80%AC%E1%80%90%E1%80%BD%E1%80%B1-%E1%80%86%E1%80%BD%E1%80%B1%E1%80%B8%E1%80%94%E1%80%BD%E1%80%B1%E1%80%B8%E1%80%94%E1%80%AD%E1%80%AF%E1%80%84%E1%80%BA%E1%80%95%E1%80%AF%E1%80%B6/
 //////////////////////////////////////////////////////////////////////////
 var view_yourself_2 = [
 	{ title:[ 'ဘာကြောင့် အရေးကြီး​သလဲ' ], sound:"", note:"Why does it matter?" },
@@ -249,7 +308,7 @@ sound:"", note:""
 	{ line:[ '• စစ်၊ အကြမ်းဖက်မှု၊ ရာဇဝတ်မှု သတင်းတွေကို အမြဲ ကြားနေ​ရနိုင်တယ်။' ], 
 		sound:"", note:"The news may bombard you with reports of war, terrorism, or crime."
 	},    
-	{ line:[ '• မိသားစု​အတွင်းမှာ ပြဿနာ​တွေ ရှိ​နိုင်တယ်။' ], 
+	{ line:[ '•   ပြဿနာ​တွေ ရှိ​နိုင်တယ်။' ], 
 		sound:"", note:"You might have to deal with problems in your family."
 	}, 
 

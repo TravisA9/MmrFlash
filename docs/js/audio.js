@@ -17,7 +17,10 @@ window.select = function(event) { var str = ''
 		} else{
 			s += `<br>`;
 			for (var i = 0; i < str.length; i++){ 
-				s += `<br>${str[i]} ( ${str.charCodeAt(i)} ) <br>`; 
+				var item = vowels.find(x => x.txt === str[i]);
+				if(item) s += `<br>${str[i]} ${item.note} ( ${str.charCodeAt(i)} )`; 
+				else
+				s += `<br>${str[i]} ( ${str.charCodeAt(i)} )`; 
 			}
 		}
 

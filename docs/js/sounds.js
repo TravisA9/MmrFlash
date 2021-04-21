@@ -14,6 +14,8 @@
 
 
 vowels = [
+
+
 // ာ ( 4140 )
 	{txt:"ာ", note:"a - sound" },
 // ိ ( 4141 )
@@ -23,13 +25,13 @@ vowels = [
 // ု ( 4143 )
 	{txt:"ု", note:" u - sound" },
 // ူ ( 4144 )
-	{txt:"ူ", note:" u - sound (possibly falling tone)" },
+	{txt:"ူ", note:" uu - sound (possibly falling tone)" },
 // ေ ( 4145 )
-	{txt:"ေ", note:" - sound" },
+	{txt:"ေ", note:" ay - sound" },
 // ဲ ( 4146 )
-	{txt:"ဲ", note:" - sound" },
+	{txt:"ဲ", note:" ell - sound" },
 // ံ ( 4150 )
-	{txt:"ံ", note:" - sound" },
+	{txt:"ံ", note:" an - sound" },
 // ့ ( 4151 )
 	{txt:"့", note:"Cuts sound short" },
 // း ( 4152 )
@@ -37,27 +39,40 @@ vowels = [
 // ် ( 4154 )
 	{txt:"်", note:" - sound" },
 // ျ ( 4155 )
-	{txt:"ျ", note:" - sound. ya pin" },
+	{txt:"ျ", note:" -ya pin- shifts the consonant sound. " },
 // ြ ( 4156 )
 	{txt:"ြ", note:" - sound" },
 // ွ ( 4157 )
 	{txt:"ွ", note:" - sound" },
 
-// ှ | ha1 hto3 | ဟထိုး which looks like a mirror image of "L" facing to the left side that goes under the character. When used in combination with wa1 hsweare3, it will only appear as a small dash or a tiny back slash to the left of wa1 hsweare3 like this: ဝွှ
 
+// ှ | ha1 hto3 | ဟထိုး which looks like a mirror image of "L" facing to the left side that goes under the character. When used in combination with wa1 hsweare3, it will only appear as a small dash or a tiny back slash to the left of wa1 hsweare3 like this: ဝွှ
 // က ( 4096 ) ka
+	{txt:"က", note:"( 4096 ) ka" },
 // ခ ( 4097 ) kha
+	{txt:"ခ", note:"( 4097 ) kha" },
 // င ( 4100 ) Nga
+	{txt:"င", note:"( 4100 ) Nga" },
 // စ ( 4101 ) sa
+	{txt:"စ", note:"( 4101 ) sa" },
 // ဆ ( 4102 ) sa
+	{txt:"ဆ", note:"( 4102 ) sa" },
 // ည ( 4106 ) nya
+	{txt:"ည", note:"( 4106 ) nya" },
 // တ ( 4112 ) ta
+	{txt:"တ", note:"( 4112 ) ta" },
 // န ( 4116 ) na
+	{txt:"န", note:"( 4116 ) na" },
 // ပ ( 4117 ) Pa
+	{txt:"ပ", note:"( 4117 ) Pa" },
 // ဖ ( 4118 ) pha
+	{txt:"ဖ", note:"( 4118 ) pha" },
 // မ ( 4121 ) da
+	{txt:"မ", note:"( 4121 ) da" },
 // လ ( 4124 ) la
+	{txt:"လ", note:"( 4124 ) la" },
 // သ ( 4126 ) tha
+	{txt:"သ", note:"( 4126 ) tha" },
 
 ]
 

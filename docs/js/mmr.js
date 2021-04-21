@@ -4,6 +4,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 // See: https://github.com/ye-kyaw-thu/sylbreak/blob/master/Javascript/resegment.js
 //////////////////////////////////////////////////////////////////////////////////
+const subWordSeperator = '​' // NOTE: invisible and takes no space.
 const myConsonant = "\u1000-\u1021"; // "က-အ"
 const enChar = "a-zA-Z0-9";
 // "ဣဤဥဦဧဩဪဿ၌၍၏၀-၉၊။!-/:-@[-`{-~\s"
